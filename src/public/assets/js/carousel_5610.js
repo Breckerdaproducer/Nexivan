@@ -145,10 +145,11 @@
                 carousel_settings['loop'] = true;
             }
 
-            if(settings['autoplay'] || settings['autoplay'] === 'true'){
+            if(settings['autoplay'] || settings['autoplay'] === 'true' || settings['autoplay'] === true){
                 carousel_settings['autoplay'] = {
-                    delay : settings['delay'],
-                    disableOnInteraction : settings['pause_on_interaction']
+                    delay : Number(settings['delay']) || 4500,
+                    disableOnInteraction : (settings['pause_on_interaction'] === true || settings['pause_on_interaction'] === 'true'),
+                    pauseOnMouseEnter : (settings['pause_on_hover'] === true || settings['pause_on_hover'] === 'true')
                 };
             } else {
                 carousel_settings['autoplay'] = false;
@@ -217,13 +218,17 @@
 
             var swiper = new Swiper($this.find(".pxl-swiper-container")[0], carousel_settings);
 
-            if(settings['autoplay'] === 'true' && settings['pause_on_hover'] === 'true'){
+            if((settings['autoplay'] === true || settings['autoplay'] === 'true') && (settings['pause_on_hover'] === true || settings['pause_on_hover'] === 'true')){
                 $( $this.find('.pxl-swiper-container') ).on({
                     mouseenter: function mouseenter() {
-                        this.swiper.autoplay.stop();
+                        if (this.swiper && this.swiper.autoplay && typeof this.swiper.autoplay.stop === 'function') {
+                            this.swiper.autoplay.stop();
+                        }
                     },
                     mouseleave: function mouseleave() {
-                        this.swiper.autoplay.start();
+                        if (this.swiper && this.swiper.autoplay && typeof this.swiper.autoplay.start === 'function') {
+                            this.swiper.autoplay.start();
+                        }
                     }
                 });
             }
@@ -242,4 +247,15 @@
         });  
 
     };
+
+    // Resilient DOM ready initialization fallback
+    $(function() {
+        $('.pxl-swiper-slider').each(function() {
+            var $slider = $(this);
+            var container = $slider.find('.pxl-swiper-container')[0];
+            if (container && !container.swiper) {
+                pxl_swiper_handler($slider.closest('.elementor-widget, .elementor-element, body'));
+            }
+        });
+    });
 } )( jQuery );

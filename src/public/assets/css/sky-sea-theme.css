@@ -388,6 +388,60 @@ select:focus {
   border-radius: 12px !important;
 }
 
+/* Testimonial Referral Avatars & Animation */
+.pxl-testimonial-carousel .pxl-item--avatar {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+  border: 2.5px solid #e0f2fe;
+  background-color: #f1f5f9;
+}
+
+.pxl-testimonial-carousel .pxl-item--avatar img.testimonial-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+  display: block;
+}
+
+.pxl-testimonial-carousel .pxl-item--avatar.avatar-initials {
+  width: 54px;
+  height: 54px;
+  min-width: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+  border: 2.5px solid #e0f2fe;
+}
+
+.pxl-testimonial-carousel .pxl-item--holder {
+  display: flex;
+  align-items: center;
+}
+
+.pxl-testimonial-carousel .pxl-item--desc {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 24px;
+  min-height: 80px;
+}
+
+.pxl-testimonial-carousel .pxl-swiper-slide {
+  transition: opacity 0.4s ease;
+}
+
 /* Headings Typography Color */
 h1, h2, h3, h4, h5, h6,
 .pxl-heading .pxl-item--title {
@@ -1521,4 +1575,37 @@ h1, h2, h3, h4, h5, h6,
     visibility: visible !important;
   }
 }
+
+/* ==========================================================================
+   Testimonial Carousel Real Avatars (Portraits)
+   ========================================================================== */
+.pxl-testimonial-carousel .pxl-item--avatar,
+.pxl-item--avatar {
+  width: 60px !important;
+  height: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: 2.5px solid #e0f2fe !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.18) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #f0f7fd !important;
+  flex-shrink: 0 !important;
+}
+
+.pxl-testimonial-carousel .pxl-item--avatar img.testimonial-avatar-img,
+img.testimonial-avatar-img {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center 20% !important;
+  border-radius: 50% !important;
+  display: block !important;
+}
+
 

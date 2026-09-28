@@ -10,45 +10,10 @@ require('dotenv').config();
 let transporter = null;
 
 /**
- * Exact Nexivan Logistics SVG Logo provided by the user
+ * Nexivan Logistics Logo for email service
  */
-const NEXIVAN_LOGO_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 70" width="180" height="37" style="display: block; width: 180px; height: 37px;" fill="none">
-  <defs>
-    <linearGradient id="nexGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#06b6d4"/>
-      <stop offset="100%" stop-color="#0284c7"/>
-    </linearGradient>
-    <linearGradient id="nexGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#0369a1"/>
-    </linearGradient>
-    <linearGradient id="nexGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
-    </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0284c7" flood-opacity="0.25"/>
-    </filter>
-  </defs>
-
-  <!-- Modern Geometric 'N' & Logistics Cube Icon -->
-  <g transform="translate(6, 6)" filter="url(#glow)">
-    <!-- Left Pillar -->
-    <path d="M6 52 L6 14 L20 6 L20 44 Z" fill="url(#nexGrad1)"/>
-    <!-- Diagonal Dynamic Wing / Ribbon -->
-    <path d="M20 6 L44 38 L44 54 L20 22 Z" fill="url(#nexGrad3)"/>
-    <!-- Right Pillar -->
-    <path d="M44 22 L44 54 L58 46 L58 8 Z" fill="url(#nexGrad2)"/>
-    <!-- Speed/Forward Accent Dart -->
-    <path d="M25 25 L38 35 L28 35 Z" fill="#ffffff" opacity="0.9"/>
-  </g>
-
-  <!-- Typography -->
-  <text x="78" y="38" font-family="'Segoe UI', -apple-system, Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="30" letter-spacing="1.5" fill="#0b1e36">NEXIVAN</text>
-  <text x="80" y="54" font-family="'Segoe UI', -apple-system, Roboto, Helvetica, Arial, sans-serif" font-weight="700" font-size="11.5" letter-spacing="6" fill="#0284c7">LOGISTICS</text>
-</svg>
-`;
+const NEXIVAN_LOGO_URL = 'https://nexivanlogistics.com/assets/images/nexivan-logo.svg';
+const NEXIVAN_LOGO_SVG = `<img src="https://nexivanlogistics.com/assets/images/nexivan-logo.svg" alt="Nexivan Logistics" width="180" height="37" style="display: block; width: 180px; height: auto; max-height: 37px; border: 0; outline: none; text-decoration: none;" />`;
 
 async function getCompanyContactInfo() {
   try {
@@ -57,9 +22,9 @@ async function getCompanyContactInfo() {
   } catch (e) {}
   return {
     email: process.env.ADMIN_NOTIFY_EMAIL || 'info@nexivanlogistics.com',
-    phone: '+1 (915) 217-3598',
-    whatsapp: '+1 (915) 217-3598',
-    address: '1204 Sunset Ave, Los Angeles, CA',
+    phone: '',
+    whatsapp: '',
+    address: 'United States',
   };
 }
 
@@ -137,7 +102,7 @@ function getClientRecipients(shipment) {
  */
 function buildCleanEmailHTML({ title, subtitle, bodyContent, companyInfo, actionButton = null }) {
   const appUrl = (process.env.APP_URL || 'https://nexivanlogistics.com').replace(/\/$/, '');
-  const currentYear = new Date().getFullYear();
+
 
   return `
 <!DOCTYPE html>
@@ -148,7 +113,7 @@ function buildCleanEmailHTML({ title, subtitle, bodyContent, companyInfo, action
   <title>${title}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #0f172a;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; padding: 36px 12px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc;">
     <tr>
       <td align="center">
         <!-- Main Email Container -->
@@ -213,7 +178,7 @@ function buildCleanEmailHTML({ title, subtitle, bodyContent, companyInfo, action
                 <a href="${appUrl}" style="color: #0284c7; text-decoration: none;">nexivanlogistics.com</a>
               </p>
               <p style="margin: 8px 0 0; font-size: 11px; color: #94a3b8;">
-                &copy; ${currentYear} Nexivan Logistics. All rights reserved. Automated dispatch telemetry notification.
+                &copy; 2020 Nexivan Logistics. All rights reserved. Automated dispatch telemetry notification.
               </p>
             </td>
           </tr>
@@ -615,9 +580,78 @@ async function sendShipmentStatusUpdate(shipment, checkpoint = {}, options = {})
   }
 }
 
+/**
+ * 5. Send a direct test email to verify SMTP and brand logo rendering
+ */
+async function sendTestEmail(targetEmail) {
+  const mailer = getTransporter();
+  const companyInfo = await getCompanyContactInfo();
+  const fromAddress = process.env.SMTP_FROM || `"Nexivan Logistics" <${companyInfo.email || 'info@nexivanlogistics.com'}>`;
+  const recipient = (targetEmail || 'whumobrianrinywe2@gmail.com').trim();
+
+  const bodyContent = `
+    <p style="margin-top: 0; font-size: 14.5px; color: #0f172a; line-height: 1.6;">
+      This is a <strong>system verification test email</strong> from the Nexivan Logistics automated dispatch engine.
+    </p>
+
+    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; padding: 14px 18px; border-radius: 6px; margin: 20px 0;">
+      <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: #15803d; display: block; margin-bottom: 4px;">SMTP Connection Verified</span>
+      <span style="font-size: 13.5px; color: #166534; font-weight: 600;">Your email service is active, authenticated, and successfully dispatching with the official Nexivan brand assets.</span>
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border: 1px solid #e2e8f0; border-radius: 6px; margin: 16px 0; background-color: #ffffff;">
+      <tr>
+        <td style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: #475569; width: 35%; border-bottom: 1px solid #f1f5f9;">Recipient:</td>
+        <td style="padding: 10px 14px; font-size: 13px; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${recipient}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: #475569; border-bottom: 1px solid #f1f5f9;">SMTP Host:</td>
+        <td style="padding: 10px 14px; font-size: 13px; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${process.env.SMTP_HOST || 'Local Mock'}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: #475569; border-bottom: 1px solid #f1f5f9;">Sender Address:</td>
+        <td style="padding: 10px 14px; font-size: 13px; color: #0f172a; border-bottom: 1px solid #f1f5f9;">${fromAddress}</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: #475569;">Timestamp:</td>
+        <td style="padding: 10px 14px; font-size: 13px; color: #0f172a;">${new Date().toUTCString()}</td>
+      </tr>
+    </table>
+  `;
+
+  const html = buildCleanEmailHTML({
+    title: 'Nexivan Dispatch — Email System Test',
+    subtitle: 'System verification message with hosted SVG brand logo',
+    bodyContent,
+    companyInfo,
+    actionButton: {
+      text: 'Visit Nexivan Logistics',
+      url: 'https://nexivanlogistics.com',
+    },
+  });
+
+  const mailOptions = {
+    from: fromAddress,
+    to: recipient,
+    subject: `Nexivan Logistics — Email Service Test [${new Date().toLocaleTimeString()}]`,
+    text: `Nexivan Logistics Email Service Test\n\nThis is a system verification email sent to ${recipient}.\nSMTP Host: ${process.env.SMTP_HOST}\nTimestamp: ${new Date().toISOString()}`,
+    html,
+  };
+
+  try {
+    const info = await mailer.sendMail(mailOptions);
+    console.log(`[Email] Test email sent successfully to ${recipient} (Message ID: ${info.messageId})`);
+    return { success: true, messageId: info.messageId, recipient };
+  } catch (error) {
+    console.error('[Email Error] Failed to send test email:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
 module.exports = {
   sendContactNotification,
   sendContactAutoReply,
   sendShipmentCreationEmail,
   sendShipmentStatusUpdate,
+  sendTestEmail,
 };
