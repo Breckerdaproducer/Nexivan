@@ -398,6 +398,20 @@ app.get([
   res.sendFile(path.join(publicDir, 'assets/images', fileName));
 });
 
+// Legacy WordPress uploads fallback route (serves local copy if requested)
+app.get('/wp-content/uploads/:year/:month/:file', (req, res, next) => {
+  const { year, month, file } = req.params;
+  const nestedPath = path.join(publicDir, 'assets', year, month, file);
+  if (fs.existsSync(nestedPath)) {
+    return res.sendFile(nestedPath);
+  }
+  const flatPath = path.join(publicDir, 'assets', 'images', file);
+  if (fs.existsSync(flatPath)) {
+    return res.sendFile(flatPath);
+  }
+  next();
+});
+
 // Serve all static assets (css, js, images, fonts, icons)
 app.use(express.static(publicDir));
 
