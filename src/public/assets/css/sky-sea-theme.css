@@ -1,0 +1,1436 @@
+/* ==========================================================================
+   Equitrans Logistics - Sea & Sky Blue Enhanced Theme
+   ========================================================================== */
+
+:root {
+  --primary-color: #0284c7 !important;
+  --primary-color-rgb: 2, 132, 199 !important;
+  --primary-darker-10-color: #0369a1 !important;
+  --primary-darker-20-color: #075985 !important;
+  --primary-darker-30-color: #0c4a6e !important;
+  --primary-darker-40-color: #082f49 !important;
+  --gradient-first-color: #06b6d4 !important;
+  --gradient-first-color-rgb: 6, 182, 212 !important;
+  --secondary-color: #0b1e36 !important;
+  --secondary-color-rgb: 11, 30, 54 !important;
+  --third-color: #38bdf8 !important;
+  --third-color-rgb: 56, 189, 248 !important;
+  --link-color-hover: #0284c7 !important;
+  --link-color-active: #0284c7 !important;
+  --gradient-color-from: #0284c7 !important;
+  --gradient-color-to: #06b6d4 !important;
+  --gradient-color-from2: #0284c7 !important;
+  --gradient-color-to2: #38bdf8 !important;
+  --wpcargo: #0284c7 !important;
+
+  /* Sea & Sky Palette Tokens */
+  --sea-sky-primary: #0284c7;
+  --sea-sky-primary-hover: #0369a1;
+  --sea-sky-vibrant: #0ea5e9;
+  --sea-sky-light: #e0f2fe;
+  --sea-sky-lightest: #f0f9ff;
+  --sea-cyan: #06b6d4;
+  --sea-cyan-light: #cffafe;
+  --sea-navy-deep: #0b1e36;
+  --sea-navy-slate: #0f172a;
+  --sea-navy-card: #132a48;
+  --sea-text-muted: #64748b;
+  --sea-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.15), 0 8px 10px -6px rgba(2, 132, 199, 0.1);
+  --sea-shadow-hover: 0 20px 30px -10px rgba(2, 132, 199, 0.25), 0 10px 15px -5px rgba(2, 132, 199, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Selection & Scrollbar
+   -------------------------------------------------------------------------- */
+::selection {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f9ff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #38bdf8;
+  border-radius: 6px;
+  border: 2px solid #f0f9ff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0284c7;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons & CTAs Design Enhancement
+   -------------------------------------------------------------------------- */
+.pxl-button .btn,
+.btn-default,
+a.btn,
+button.btn,
+.wpcargo-btn-primary,
+#submit_wpcargo,
+.wp-block-button__link {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  letter-spacing: 0.3px !important;
+}
+
+/* Outlined buttons */
+.btn-outline,
+.btn-outline-primary,
+.pxl-button .btn.btn-outline {
+  border-color: var(--sea-sky-primary) !important;
+  color: var(--sea-sky-primary) !important;
+}
+
+/* Default / Solid buttons maintain white text */
+.btn-default,
+.btn-default .pxl--btn-text,
+.wpcargo-btn-primary,
+#submit_wpcargo,
+.wp-block-button__link {
+  color: #ffffff !important;
+}
+
+.elementor-element .pxl-button .btn:hover,
+.pxl-button .btn:hover,
+.btn-default:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Header & Navigation (Original Layout Preserved, Sea & Sky Blue Colors Maintained)
+   -------------------------------------------------------------------------- */
+#pxl-header-elementor .pxl-button .btn,
+#pxl-header-elementor .btn-default,
+.elementor-element-f1fab9c .pxl-button .btn,
+.elementor-element-a9f821f .pxl-button .btn {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  letter-spacing: inherit !important;
+  transform: none !important;
+}
+
+#pxl-header-elementor .pxl-button .btn .pxl--btn-text,
+#pxl-header-elementor .btn-default .pxl--btn-text,
+.elementor-element-f1fab9c .pxl-button .btn .pxl--btn-text,
+.elementor-element-a9f821f .pxl-button .btn .pxl--btn-text {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
+}
+
+#pxl-header-elementor .pxl-button .btn:hover,
+#pxl-header-elementor .btn-default:hover,
+.elementor-element-f1fab9c .pxl-button .btn:hover,
+.elementor-element-a9f821f .pxl-button .btn:hover {
+  background-color: #0369a1 !important;
+  color: #ffffff !important;
+}
+
+#pxl-header-elementor .pxl-button .btn:hover .pxl--btn-text,
+#pxl-header-elementor .btn-default:hover .pxl--btn-text,
+.elementor-element-f1fab9c .pxl-button .btn:hover .pxl--btn-text,
+.elementor-element-a9f821f .pxl-button .btn:hover .pxl--btn-text {
+  color: #ffffff !important;
+}
+
+.pxl-menu-primary > li:hover > a,
+.pxl-menu-primary > li.current-menu-item > a,
+.pxl-menu-primary > li.current_page_item > a {
+  color: #0284c7 !important;
+}
+
+.pxl-menu-primary .sub-menu li a:hover {
+  color: #0284c7 !important;
+}
+
+.pxl-anchor-button:hover i,
+.pxl-anchor-button.active i {
+  color: #0284c7 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Badges, Subtitles & Section Accents
+   -------------------------------------------------------------------------- */
+.pxl-item--text,
+.elementor-element .pxl-text-editor[style*="#1EAE98"],
+.elementor-element .pxl-text-editor[style*="#FA4729"] {
+  color: #0284c7 !important;
+}
+
+/* Section Pre-Titles / Pill Badges */
+.elementor-element-2afae3d .pxl-text-editor,
+.elementor-element-7432dab .pxl-text-editor,
+.elementor-element-7e7f5f7 .pxl-text-editor,
+.elementor-element-2ad7113 .pxl-text-editor {
+  color: #0284c7 !important;
+  font-weight: 600 !important;
+  display: inline-block;
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  padding: 4px 18px;
+  border-radius: 30px;
+  letter-spacing: 1.2px !important;
+}
+
+/* Counter Numbers & Titles */
+.pxl-counter .pxl-counter--title {
+  color: #0284c7 !important;
+}
+
+.pxl-counter .pxl-counter--number {
+  color: #0369a1 !important;
+  font-weight: 700 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Cards, Service Grids & Feature Boxes
+   -------------------------------------------------------------------------- */
+.service-content,
+.pxl-item-box1,
+.pxl-item--inner,
+.elementor-widget-pxl_service_grid .pxl-service-item,
+.pxl-service-carousel .pxl-item--inner {
+  border-radius: 12px !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.elementor-widget-pxl_service_grid .pxl-service-item:hover,
+.pxl-service-carousel .pxl-item--inner:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 16px 32px rgba(2, 132, 199, 0.12) !important;
+  border-color: rgba(2, 132, 199, 0.3) !important;
+}
+
+/* Service Box Titles & Hover */
+.service-content .service-title a:hover,
+.service-content .service-title:hover {
+  color: #0284c7 !important;
+}
+
+/* Service Item Icons */
+.service-icon i,
+.pxl-item--icon i {
+  color: #0284c7 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Dark Sections: Deep Ocean Navy with Sky Accents
+   -------------------------------------------------------------------------- */
+.elementor-element-910db7d,
+.elementor-element-1def221::before,
+.elementor-element-1def221 > .elementor-motion-effects-container > .elementor-motion-effects-layer::before,
+section.bg-navy,
+footer.pxl-footer,
+.pxl-footer-elementor {
+  background-color: #0b1e36 !important;
+}
+
+.elementor-element-910db7d {
+  background: linear-gradient(180deg, #0b1e36 0%, #081628 100%) !important;
+}
+
+/* Text links in dark sections */
+.elementor-element-437549c .pxl-link a:hover,
+.pxl-footer a:hover,
+.pxl-link a:hover {
+  color: #38bdf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Light Sections: Pristine Sea-Air Background
+   -------------------------------------------------------------------------- */
+.elementor-element-d0e994a,
+.elementor-element-cdee9a4,
+.elementor-element-d0e994a:not(.elementor-motion-effects-element-type-background),
+.elementor-element-cdee9a4:not(.elementor-motion-effects-element-type-background) {
+  background-color: #f0f7fd !important;
+}
+
+/* --------------------------------------------------------------------------
+   Tracking Form Enhancement (wpcargo)
+   -------------------------------------------------------------------------- */
+.wpcargo-track {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.1);
+  border: 1px solid rgba(2, 132, 199, 0.12);
+}
+
+@media (max-width: 768px) {
+  .wpcargo-track,
+  .wpcargo-track.wpcargo {
+    padding: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .wpcargo-track > *,
+  .wpcargo-track.wpcargo > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+.track_form_table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.track_form_th h4 {
+  color: #0b1e36 !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  margin-bottom: 12px !important;
+}
+
+.track_form_td input.input_track_num {
+  width: 100% !important;
+  padding: 14px 20px !important;
+  border-radius: 8px !important;
+  border: 2px solid #bae6fd !important;
+  font-size: 16px !important;
+  transition: all 0.25s ease !important;
+  background: #f8fafc !important;
+}
+
+.track_form_td input.input_track_num:focus {
+  outline: none !important;
+  border-color: #0284c7 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.2) !important;
+}
+
+.track_form_td input.wpcargo-btn-primary,
+#submit_wpcargo {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  padding: 14px 28px !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.track_form_td input.wpcargo-btn-primary:hover,
+#submit_wpcargo:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%) !important;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Preloader: Sky Blue Circular Pulse
+   -------------------------------------------------------------------------- */
+.pxl-loader.style-2 .loader-line-mask .loader-line {
+  background-image: linear-gradient(135deg, #0284c7, #38bdf8) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Contact Form & Inputs Enhancement
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+  border-radius: 8px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  transition: all 0.25s ease !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15) !important;
+}
+
+/* Testimonial slider quotes and active dots */
+.pxl-testimonial-carousel .pxl-item--title {
+  color: #0b1e36 !important;
+}
+
+.pxl-swiper-slider .swiper-pagination-bullet-active {
+  background: #0284c7 !important;
+  width: 24px !important;
+  border-radius: 12px !important;
+}
+
+/* Headings Typography Color */
+h1, h2, h3, h4, h5, h6,
+.pxl-heading .pxl-item--title {
+  color: #0b1e36;
+}
+
+/* --------------------------------------------------------------------------
+   Chaty Floating "Contact Us" Button - Sea & Sky Blue Theme
+   -------------------------------------------------------------------------- */
+.chaty-widget .chaty-cta-button,
+.chaty-widget .chaty-cta-button button,
+.chaty-widget .chaty-i-trigger .chaty-cta-button,
+.chaty-widget .chaty-i-trigger .chaty-cta-button button,
+.chaty-widget .chaty-cta-main .chaty-cta-button,
+.chaty-widget .chaty-cta-main .chaty-cta-button button,
+.chaty-widget .chaty-cta-close .chaty-cta-button,
+.chaty-widget .chaty-cta-close .chaty-cta-button button,
+.chaty-widget .chaty-i-trigger .chaty-channel.single .chaty-cta-button {
+  background-color: #0284c7 !important;
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4) !important;
+}
+
+.chaty-widget .chaty-cta-button:hover,
+.chaty-widget .chaty-cta-button button:hover,
+.chaty-widget .chaty-cta-main .chaty-cta-button:hover,
+.chaty-widget .chaty-cta-close .chaty-cta-button:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%) !important;
+  box-shadow: 0 14px 28px rgba(2, 132, 199, 0.55) !important;
+}
+
+/* SVG circle and ellipse fill in main trigger and close button */
+.chaty-widget .chaty-cta-main svg circle,
+.chaty-widget .chaty-cta-close svg ellipse,
+.chaty-widget .chaty-cta-close svg circle {
+  fill: #0284c7 !important;
+}
+
+.chaty-widget .chaty-cta-main:hover svg circle,
+.chaty-widget .chaty-cta-close:hover svg ellipse,
+.chaty-widget .chaty-cta-close:hover svg circle {
+  fill: #0369a1 !important;
+}
+
+/* "Contact us" Tooltip Styling */
+.chaty-widget .chaty-tooltip:after,
+.chaty-widget .on-hover-text,
+.chaty-widget .on-hover-text p {
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  color: #0b1e36 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Nexivan Tracking UI & Live Telemetry Styles
+   -------------------------------------------------------------------------- */
+.nexivan-tracking-results-wrap {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.nex-track-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(11, 30, 54, 0.08);
+  border: 1px solid #e2e8f0;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.nex-track-loading {
+  text-align: center;
+  padding: 48px 24px;
+  color: #0b1e36;
+}
+
+.nex-spinner {
+  width: 46px;
+  height: 46px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #0284c7;
+  border-radius: 50%;
+  animation: nexSpin 0.9s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes nexSpin {
+  to { transform: rotate(360deg); }
+}
+
+.nex-track-error {
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.nex-error-icon {
+  font-size: 48px;
+  color: #f59e0b;
+  margin-bottom: 16px;
+}
+
+.nex-track-error h3 {
+  color: #0b1e36;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.nex-error-tips {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #475569;
+  border-left: 4px solid #0284c7;
+}
+
+.nex-error-tips ul {
+  margin: 8px 0 0 18px;
+  padding: 0;
+}
+
+/* Tracking Success Card */
+.nex-track-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 16px;
+}
+
+.nex-badge-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.nex-tracking-number {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0b1e36;
+  margin: 0 0 6px;
+  font-family: inherit;
+}
+
+.nex-tracking-route {
+  font-size: 15px;
+  color: #334155;
+  margin: 0;
+}
+
+.nex-track-header-right {
+  text-align: right;
+}
+
+.nex-eta-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nex-eta-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0284c7;
+  margin-top: 2px;
+}
+
+.nex-service-type {
+  font-size: 13px;
+  color: #475569;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Stepper Progress Bar */
+.nex-stepper-container {
+  margin: 36px 0 28px;
+  position: relative;
+  padding: 0 10px;
+}
+
+.nex-stepper-bar-bg {
+  position: absolute;
+  top: 18px;
+  left: 30px;
+  right: 30px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.nex-stepper-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #06b6d4);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.nex-stepper-points {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.nex-step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 80px;
+}
+
+.nex-step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #cbd5e1;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.nex-step-node.done .nex-step-circle {
+  border-color: #0284c7;
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.nex-step-node.current .nex-step-circle {
+  border-color: #06b6d4;
+  background: #06b6d4;
+  color: #ffffff;
+  box-shadow: 0 0 0 5px rgba(6, 182, 212, 0.25);
+}
+
+.nex-step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.nex-step-node.done .nex-step-label,
+.nex-step-node.current .nex-step-label {
+  color: #0b1e36;
+}
+
+/* Overview Details Grid */
+.nex-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.nex-detail-item {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.nex-d-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.nex-d-val {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.nex-d-val.highlight {
+  color: #0284c7;
+}
+
+/* Shipper / Receiver Cards */
+.nex-party-boxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.nex-party-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.nex-party-box h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0b1e36;
+  margin: 0 0 10px;
+}
+
+.nex-party-box p {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.nex-party-sub {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Timeline Milestones Section */
+.nex-timeline-section {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 24px;
+}
+
+.nex-timeline-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0b1e36;
+  margin: 0 0 20px;
+}
+
+.nex-timeline-flow {
+  position: relative;
+  padding-left: 28px;
+}
+
+.nex-timeline-flow::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: #cbd5e1;
+}
+
+.nex-timeline-item {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.nex-timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.nex-tl-bullet {
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid #0284c7;
+  z-index: 2;
+}
+
+.nex-tl-bullet.pulsing {
+  border-color: #06b6d4;
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3);
+}
+
+.nex-tl-content {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 18px;
+  border: 1px solid #f1f5f9;
+}
+
+.nex-tl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.nex-tl-location {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b1e36;
+}
+
+.nex-tl-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.nex-tl-status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+  margin-bottom: 6px;
+}
+
+.nex-tl-desc {
+  margin: 0;
+  font-size: 13px;
+  color: #475569;
+}
+
+.nex-no-cp {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Actions */
+.nex-track-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.nex-btn-primary {
+  background: #0284c7;
+  color: #ffffff !important;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.nex-btn-primary:hover {
+  background: #0369a1;
+}
+
+.nex-btn-secondary {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.nex-btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+/* --------------------------------------------------------------------------
+   Contact Form Alert Banners
+   -------------------------------------------------------------------------- */
+.nex-alert {
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-family: inherit;
+}
+
+.nex-alert-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.nex-alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+/* --------------------------------------------------------------------------
+   Quick Search Header Popup Visibility & Dropdown Enhancements
+   -------------------------------------------------------------------------- */
+.pxl-hidden-panel-popup {
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+.pxl-hidden-panel-popup.active {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 999999 !important;
+}
+
+.pxl-hidden-panel-popup.active .pxl-popup--overlay {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  background: rgba(11, 30, 54, 0.72) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+
+.pxl-hidden-panel-popup.active .pxl-popup--conent {
+  transform: translateY(0%) !important;
+  -webkit-transform: translateY(0%) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  min-height: 480px !important;
+  max-height: 90vh !important;
+  overflow-y: visible !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 25px 50px -12px rgba(11, 30, 54, 0.25) !important;
+}
+
+@media (max-width: 768px) {
+  .pxl-hidden-panel-popup.active .pxl-popup--conent {
+    min-height: 420px !important;
+    padding-bottom: 40px !important;
+    overflow-y: auto !important;
+  }
+}
+
+.pxl-hidden-panel-popup .pxl-conent-elementor,
+.pxl-hidden-panel-popup .elementor-8565,
+.pxl-hidden-panel-popup .elementor-element-6c63e37,
+.pxl-hidden-panel-popup .elementor-element-6e3275e,
+.pxl-hidden-panel-popup .elementor-element-c824411,
+.pxl-hidden-panel-popup .elementor-element-10cae0c {
+  overflow: visible !important;
+}
+
+.pxl-anchor-button[data-target*="8565"],
+.pxl-anchor-button .fa-search,
+.pxl-anchor-button .fal.fa-search,
+.pxl-anchor-button {
+  cursor: pointer !important;
+}
+
+.pxl-hidden-panel-popup .pxl-close-popup {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  border: none !important;
+}
+
+.pxl-hidden-panel-popup .pxl-close-popup:hover {
+  background: #0284c7 !important;
+  transform: rotate(90deg) !important;
+}
+
+.pxl-hidden-panel-popup .pxl-close-popup:before,
+.pxl-hidden-panel-popup .pxl-close-popup:after {
+  content: '' !important;
+  position: absolute !important;
+  width: 18px !important;
+  height: 2px !important;
+  background-color: #0b1e36 !important;
+  top: 50% !important;
+  left: 50% !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.pxl-hidden-panel-popup .pxl-close-popup:before {
+  transform: translate(-50%, -50%) rotate(45deg) !important;
+}
+
+.pxl-hidden-panel-popup .pxl-close-popup:after {
+  transform: translate(-50%, -50%) rotate(-45deg) !important;
+}
+
+.pxl-hidden-panel-popup .pxl-close-popup:hover:before,
+.pxl-hidden-panel-popup .pxl-close-popup:hover:after {
+  background-color: #ffffff !important;
+}
+
+/* Form & Input Enhancements */
+.pxl-search-form1.style-1 .pxl-searchform-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  background: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.1) !important;
+  border: 2px solid #cbd5e1 !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.pxl-search-form1.style-1 .pxl-searchform-wrap:focus-within {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15) !important;
+}
+
+.pxl-search-form1.style-1 .pxl-search-field {
+  height: 64px !important;
+  border: none !important;
+  outline: none !important;
+  padding: 0 24px !important;
+  font-size: 18px !important;
+  color: #0b1e36 !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  background: transparent !important;
+}
+
+.pxl-search-form1.style-1 .pxl-search-submit {
+  position: static !important;
+  height: 64px !important;
+  width: 72px !important;
+  border-radius: 0 10px 10px 0 !important;
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  font-size: 20px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.pxl-search-form1.style-1 .pxl-search-submit:hover {
+  background: #0369a1 !important;
+}
+
+.pxl-search-form1.style-1 .pxl-searchform-divider {
+  display: none !important;
+}
+
+.nex-live-search-dropdown {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #ffffff !important;
+  border-radius: 14px !important;
+  box-shadow: 0 20px 40px rgba(11, 30, 54, 0.18) !important;
+  border: 1px solid #e2e8f0 !important;
+  max-height: 380px !important;
+  overflow-y: auto !important;
+  z-index: 1000000 !important;
+  padding: 10px !important;
+  text-align: left !important;
+}
+
+.nex-search-cat-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 8px 12px 4px !important;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 4px;
+}
+
+.nex-search-cat-title:first-child {
+  border-top: none;
+  margin-top: 0;
+}
+
+.nex-search-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  text-decoration: none !important;
+  transition: background 0.15s !important;
+  cursor: pointer !important;
+}
+
+.nex-search-item:hover,
+.nex-search-item.active {
+  background: #f0f9ff !important;
+}
+
+.nex-si-icon {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  background: #e0f2fe !important;
+  color: #0284c7 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 15px !important;
+  flex-shrink: 0 !important;
+}
+
+.nex-si-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.nex-si-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0b1e36 !important;
+  line-height: 1.3 !important;
+}
+
+.nex-si-desc {
+  font-size: 12px !important;
+  color: #64748b !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.4 !important;
+  margin-top: 2px !important;
+}
+
+.nex-si-badge {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 3px 8px !important;
+  border-radius: 9999px !important;
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  text-transform: uppercase !important;
+  flex-shrink: 0 !important;
+}
+
+.nex-si-badge.badge-track {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.nex-si-badge.badge-service {
+  background: #e0e7ff !important;
+  color: #4338ca !important;
+}
+
+.nex-search-no-results {
+  padding: 24px !important;
+  text-align: center !important;
+  color: #64748b !important;
+  font-size: 14px !important;
+}
+
+.nex-search-footer {
+  padding: 10px 12px 6px !important;
+  border-top: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   Slider Revolution Hero (Original Design & Slide-Up Animations Restored)
+   ========================================================================== */
+#SR7_1_1 {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 840px !important;
+  display: block !important;
+  overflow: hidden !important;
+  background-color: transparent !important;
+}
+
+#SR7_1_1 sr7-adjuster {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 840px !important;
+}
+
+#SR7_1_1 sr7-content {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  z-index: 1 !important;
+  overflow: hidden !important;
+}
+
+#SR7_1_1 sr7-slide#SR7_1_1-1 {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  padding-left: max(30px, calc((100% - 1430px) / 2 + 20px)) !important;
+  padding-right: max(30px, calc((100% - 1430px) / 2 + 20px)) !important;
+  box-sizing: border-box !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 2 !important;
+}
+
+#SR7_1_1 sr7-slide#SR7_1_1-15 {
+  display: none !important;
+}
+
+/* Background image - Natural & Clean without artificial shade layer */
+#SR7_1_1 sr7-bg,
+#SR7_1_1 #SR7_1_1-1-6 {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+  z-index: 1 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+#SR7_1_1 sr7-bg img {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  display: block !important;
+  filter: none !important;
+}
+
+#SR7_1_1 sr7-bg::after {
+  display: none !important;
+}
+
+/* Layer 2: Main Headline */
+#SR7_1_1 #SR7_1_1-1-2 {
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 10 !important;
+  font-family: 'Arial', Helvetica, sans-serif !important;
+  font-size: 96px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -3.5px !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  max-width: 860px !important;
+  margin: 0 0 22px 0 !important;
+  padding: 0 !important;
+  animation: sr7MaskSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+/* Layer 3: Subtitle */
+#SR7_1_1 #SR7_1_1-1-3 {
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 10 !important;
+  font-family: 'Arial', Helvetica, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 30px !important;
+  letter-spacing: 0.18px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  max-width: 620px !important;
+  margin: 0 0 24px 0 !important;
+  padding: 0 !important;
+  animation: sr7MaskSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both !important;
+}
+
+/* Layer 4: Accent Divider Line */
+#SR7_1_1 #SR7_1_1-1-4 {
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 10 !important;
+  width: 620px !important;
+  max-width: 100% !important;
+  height: 1px !important;
+  background-color: rgba(255, 255, 255, 0.45) !important;
+  margin: 0 0 32px 0 !important;
+  padding: 0 !important;
+  animation: sr7FadeIn 1s ease 0.35s both !important;
+}
+
+/* Layer 5: Track Shipment Button */
+#SR7_1_1 a.sr7-layer,
+#SR7_1_1 [data-alias="button-5"] {
+  display: inline-flex !important;
+  visibility: visible !important;
+  position: relative !important;
+  z-index: 10 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.5px !important;
+  color: #ffffff !important;
+  background: #0284c7 !important;
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%) !important;
+  border-radius: 5px !important;
+  padding: 20px 58px !important;
+  box-shadow: 0px 10px 25px rgba(2, 132, 199, 0.45) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: sr7FadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both !important;
+}
+
+#SR7_1_1 a.sr7-layer:hover,
+#SR7_1_1 [data-alias="button-5"]:hover {
+  background: #0369a1 !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0px 16px 32px rgba(2, 132, 199, 0.65) !important;
+  color: #ffffff !important;
+}
+
+/* Authentic Slide-Up & Fade Animations */
+@keyframes sr7MaskSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sr7FadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sr7FadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Responsive Breakpoints matching Slider Revolution breakpoints */
+@media (max-width: 1366px) {
+  #SR7_1_1,
+  #SR7_1_1 sr7-adjuster {
+    min-height: 760px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-2 {
+    font-size: 80px !important;
+    letter-spacing: -2.5px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  #SR7_1_1,
+  #SR7_1_1 sr7-adjuster {
+    min-height: 640px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-2 {
+    font-size: 50px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -1.5px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-3 {
+    font-size: 17px !important;
+    line-height: 26px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #SR7_1_1,
+  #SR7_1_1 sr7-adjuster {
+    min-height: 540px !important;
+  }
+  #SR7_1_1 sr7-slide#SR7_1_1-1 {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-2 {
+    font-size: 34px !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.5px !important;
+    margin-bottom: 14px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-3 {
+    font-size: 15px !important;
+    line-height: 24px !important;
+    margin-bottom: 18px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-4 {
+    margin-bottom: 24px !important;
+  }
+  #SR7_1_1 a.sr7-layer,
+  #SR7_1_1 [data-alias="button-5"] {
+    font-size: 15px !important;
+    padding: 15px 36px !important;
+  }
+}
+

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <!-- Realistic Shadow -->
+    <filter id="planeShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.35"/>
+    </filter>
+    
+    <!-- Fuselage Gradient -->
+    <linearGradient id="fuselageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="25%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#f8fafc"/>
+      <stop offset="75%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+
+    <!-- Wing Gradient -->
+    <linearGradient id="wingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="60%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+
+    <!-- Engine Cowling -->
+    <linearGradient id="engineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="40%" stop-color="#94a3b8"/>
+      <stop offset="70%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+
+    <!-- Brand Accent Blue -->
+    <linearGradient id="brandBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#planeShadow)">
+    <!-- Main Wings -->
+    <path d="M 60 48 L 114 74 L 110 79 L 60 62 L 10 79 L 6 74 Z" fill="url(#wingGrad)" stroke="#94a3b8" stroke-width="0.8"/>
+    
+    <!-- Wing Blue Trim / Winglets -->
+    <path d="M 114 74 L 110 79 L 107 77 L 112 72 Z" fill="url(#brandBlue)"/>
+    <path d="M 6 74 L 10 79 L 13 77 L 8 72 Z" fill="url(#brandBlue)"/>
+
+    <!-- Jet Engines Left & Right -->
+    <!-- Left Engine -->
+    <rect x="32" y="58" width="8" height="18" rx="4" fill="url(#engineGrad)" stroke="#1e293b" stroke-width="0.7"/>
+    <ellipse cx="36" cy="59" rx="3.5" ry="1.5" fill="#0f172a"/>
+    <rect x="34.5" y="52" width="3" height="8" fill="#64748b"/>
+
+    <!-- Right Engine -->
+    <rect x="80" y="58" width="8" height="18" rx="4" fill="url(#engineGrad)" stroke="#1e293b" stroke-width="0.7"/>
+    <ellipse cx="84" cy="59" rx="3.5" ry="1.5" fill="#0f172a"/>
+    <rect x="82.5" y="52" width="3" height="8" fill="#64748b"/>
+
+    <!-- Tail Horizontal Stabilizers -->
+    <path d="M 60 92 L 84 104 L 81 108 L 60 100 L 39 108 L 36 104 Z" fill="url(#wingGrad)" stroke="#94a3b8" stroke-width="0.8"/>
+
+    <!-- Main Fuselage -->
+    <path d="M 60 12 C 64 18 66 32 66 70 C 66 92 63 106 60 110 C 57 106 54 92 54 70 C 54 32 56 18 60 12 Z" fill="url(#fuselageGrad)" stroke="#94a3b8" stroke-width="0.8"/>
+
+    <!-- Vertical Stabilizer (Tail Fin) with Nexivan Blue -->
+    <path d="M 60 84 L 62.5 106 L 60 109 L 57.5 106 Z" fill="url(#brandBlue)" stroke="#0369a1" stroke-width="0.6"/>
+
+    <!-- Cockpit Windshield (Glass sheen) -->
+    <path d="M 57 24 C 58 22 60 21 63 24 L 64 27 C 62 25 58 25 56 27 Z" fill="#0f172a"/>
+    <path d="M 58 24.5 C 59 23 61 23 62 24.5" stroke="#38bdf8" stroke-width="0.7" fill="none"/>
+
+    <!-- Nose Radome Line -->
+    <path d="M 58 17 C 60 18 62 18 64 17" stroke="#cbd5e1" stroke-width="0.8" fill="none"/>
+
+    <!-- Cargo Livery Stripe -->
+    <line x1="60" y1="34" x2="60" y2="78" stroke="url(#brandBlue)" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

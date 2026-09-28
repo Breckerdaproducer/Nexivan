@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 80" width="140" height="80">
+  <defs>
+    <filter id="truckShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#0f172a" flood-opacity="0.32"/>
+    </filter>
+
+    <linearGradient id="cabGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="45%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+
+    <linearGradient id="trailerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="50%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+
+    <linearGradient id="tireGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#truckShadow)">
+    <!-- Trailer Body -->
+    <rect x="10" y="14" width="82" height="42" rx="3" fill="url(#trailerGrad)" stroke="#cbd5e1" stroke-width="1.2"/>
+    
+    <!-- Trailer Corrugated Vertical Lines -->
+    <line x1="20" y1="16" x2="20" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+    <line x1="30" y1="16" x2="30" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+    <line x1="40" y1="16" x2="40" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+    <line x1="50" y1="16" x2="50" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+    <line x1="60" y1="16" x2="60" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+    <line x1="70" y1="16" x2="70" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+    <line x1="80" y1="16" x2="80" y2="54" stroke="#e2e8f0" stroke-width="1.2"/>
+
+    <!-- Trailer Livery Blue Stripe & Text -->
+    <rect x="10" y="32" width="82" height="7" fill="#0284c7"/>
+    <text x="51" y="27" font-family="system-ui, -apple-system, sans-serif" font-size="7.5" font-weight="900" fill="#0b1e36" text-anchor="middle" letter-spacing="1">NEXIVAN</text>
+
+    <!-- Trailer Undercarriage Chassis -->
+    <rect x="12" y="56" width="80" height="3" fill="#1e293b"/>
+    <!-- Fuel tank -->
+    <rect x="42" y="55" width="22" height="6" rx="2" fill="url(#metalGrad)" stroke="#475569" stroke-width="0.7"/>
+
+    <!-- Truck Tractor Cab -->
+    <path d="M 88 56 L 88 22 L 102 22 L 118 36 L 126 38 C 129 38 130 40 130 44 L 130 56 Z" fill="url(#cabGrad)" stroke="#0369a1" stroke-width="1"/>
+
+    <!-- Aerodynamic Roof Fairing -->
+    <path d="M 88 22 L 88 15 C 96 15 104 18 106 22 Z" fill="#0284c7" stroke="#0369a1" stroke-width="0.8"/>
+
+    <!-- Windshield -->
+    <path d="M 104 24 L 116 36 L 104 36 Z" fill="url(#glassGrad)"/>
+    <line x1="105" y1="26" x2="114" y2="35" stroke="#38bdf8" stroke-width="0.8" opacity="0.6"/>
+
+    <!-- Side Window -->
+    <rect x="92" y="25" width="10" height="11" rx="1.5" fill="url(#glassGrad)"/>
+
+    <!-- Side Mirror -->
+    <rect x="102" y="27" width="2" height="7" rx="0.8" fill="#0f172a"/>
+
+    <!-- Chrome Front Grille -->
+    <rect x="126" y="44" width="4" height="11" fill="url(#metalGrad)" stroke="#334155" stroke-width="0.6"/>
+    <line x1="126" y1="47" x2="130" y2="47" stroke="#334155" stroke-width="0.6"/>
+    <line x1="126" y1="50" x2="130" y2="50" stroke="#334155" stroke-width="0.6"/>
+    <line x1="126" y1="53" x2="130" y2="53" stroke="#334155" stroke-width="0.6"/>
+
+    <!-- Headlight -->
+    <rect x="126" y="40" width="3.5" height="3" rx="0.8" fill="#fef08a" stroke="#d97706" stroke-width="0.5"/>
+
+    <!-- Chrome Exhaust Stack -->
+    <rect x="89" y="10" width="2.5" height="14" rx="1" fill="url(#metalGrad)"/>
+
+    <!-- WHEELS (Trailer Tandem Rear + Tractor Mid & Front) -->
+    <!-- Rear Trailer Wheels -->
+    <g transform="translate(22, 59)">
+      <circle cx="0" cy="0" r="9.5" fill="url(#tireGrad)"/>
+      <circle cx="0" cy="0" r="5" fill="url(#metalGrad)" stroke="#334155" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f172a"/>
+    </g>
+    <g transform="translate(39, 59)">
+      <circle cx="0" cy="0" r="9.5" fill="url(#tireGrad)"/>
+      <circle cx="0" cy="0" r="5" fill="url(#metalGrad)" stroke="#334155" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f172a"/>
+    </g>
+
+    <!-- Tractor Drive & Steer Wheels -->
+    <g transform="translate(97, 59)">
+      <circle cx="0" cy="0" r="9.5" fill="url(#tireGrad)"/>
+      <circle cx="0" cy="0" r="5" fill="url(#metalGrad)" stroke="#334155" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f172a"/>
+    </g>
+    <g transform="translate(120, 59)">
+      <circle cx="0" cy="0" r="9.5" fill="url(#tireGrad)"/>
+      <circle cx="0" cy="0" r="5" fill="url(#metalGrad)" stroke="#334155" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f172a"/>
+    </g>
+  </g>
+</svg>

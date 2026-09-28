@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" width="120" height="70">
+  <defs>
+    <filter id="vanShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.3"/>
+    </filter>
+
+    <linearGradient id="vanBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+
+    <linearGradient id="vanAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <linearGradient id="tireGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <linearGradient id="metalHub" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="50%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#vanShadow)">
+    <!-- Van Main Body -->
+    <path d="M 12 48 L 12 18 C 12 15 15 14 18 14 L 78 14 C 84 14 94 18 100 25 L 108 34 C 111 37 112 41 112 45 L 112 48 Z" fill="url(#vanBodyGrad)" stroke="#cbd5e1" stroke-width="1.2"/>
+
+    <!-- Front Windshield -->
+    <path d="M 80 18 L 96 26 L 80 26 Z" fill="url(#glassGrad)"/>
+    <line x1="82" y1="20" x2="94" y2="25" stroke="#38bdf8" stroke-width="0.8" opacity="0.6"/>
+
+    <!-- Side Cab Window -->
+    <rect x="68" y="18" width="10" height="9" rx="1.5" fill="url(#glassGrad)"/>
+
+    <!-- Side Sliding Door Seam -->
+    <rect x="36" y="16" width="30" height="31" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+    <!-- Door Handle -->
+    <rect x="61" y="30" width="3.5" height="1.5" rx="0.5" fill="#64748b"/>
+
+    <!-- Nexivan Brand Side Livery -->
+    <path d="M 12 32 L 68 32 L 64 38 L 12 38 Z" fill="url(#vanAccent)"/>
+    <text x="38" y="27" font-family="system-ui, -apple-system, sans-serif" font-size="6.5" font-weight="900" fill="#0b1e36" text-anchor="middle" letter-spacing="0.8">EXPRESS</text>
+
+    <!-- Headlight & Bumper -->
+    <rect x="108" y="38" width="4" height="4" rx="1" fill="#fef08a" stroke="#d97706" stroke-width="0.5"/>
+    <rect x="106" y="44" width="6" height="4" rx="1" fill="#475569"/>
+    <!-- Rear Bumper -->
+    <rect x="10" y="44" width="4" height="4" rx="1" fill="#475569"/>
+
+    <!-- Wheels (Rear & Front) -->
+    <g transform="translate(30, 48)">
+      <circle cx="0" cy="0" r="9" fill="url(#tireGrad)"/>
+      <circle cx="0" cy="0" r="4.5" fill="url(#metalHub)" stroke="#334155" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f172a"/>
+    </g>
+    <g transform="translate(92, 48)">
+      <circle cx="0" cy="0" r="9" fill="url(#tireGrad)"/>
+      <circle cx="0" cy="0" r="4.5" fill="url(#metalHub)" stroke="#334155" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="1.5" fill="#0f172a"/>
+    </g>
+  </g>
+</svg>

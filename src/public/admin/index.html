@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexivan Logistics &mdash; Admin Management Portal</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230284c7'/><path d='M30 50 L45 65 L75 35' stroke='white' stroke-width='10' fill='none'/></svg>">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+              navy: '#0b1e36',
+              dark: '#081424'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-in-transit { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .badge-delivered { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-out-for-delivery { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-pending { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .badge-on-hold { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex h-screen overflow-hidden">
+
+  <!-- ======================== LOGIN OVERLAY ======================== -->
+  <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 min-h-screen hidden p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 border border-slate-200 max-h-[95vh] overflow-y-auto">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-tr from-brand-600 to-cyan-500 rounded-2xl flex items-center justify-center text-white mx-auto shadow-lg shadow-brand-500/30 mb-4">
+          <i class="fa-solid fa-shield-halved text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-brand-navy">Nexivan Admin Portal</h2>
+        <p class="text-sm text-slate-500 mt-1">Sign in to manage shipments, trackings & messages</p>
+      </div>
+
+      <form id="loginForm" class="space-y-4" autocomplete="on">
+        <div id="loginError" class="hidden bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="loginErrorText">Invalid credentials</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Username or Email</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400"></i>
+            <input type="text" id="loginUsername" required autocomplete="username" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:bg-white focus:outline-none text-sm transition" placeholder="Enter username or email" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400"></i>
+            <input type="password" id="loginPassword" required autocomplete="current-password" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:bg-white focus:outline-none text-sm transition" placeholder="Enter password" />
+          </div>
+        </div>
+
+        <button type="submit" id="loginBtn" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-cyan-600 hover:from-brand-700 hover:to-cyan-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition duration-200 flex items-center justify-center gap-2">
+          <span>Sign In to Dashboard</span>
+          <i class="fa-solid fa-arrow-right text-sm"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================== MAIN SIDEBAR ======================== -->
+  <aside id="mainSidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-brand-navy flex flex-col shrink-0 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:static lg:inset-auto shadow-2xl lg:shadow-none">
+    <!-- Brand Logo Area -->
+    <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-cyan-400 flex items-center justify-center text-white font-bold shadow-md shadow-brand-500/20">
+          <i class="fa-solid fa-cubes-stacked text-lg"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-white tracking-wide text-base leading-tight">NEXIVAN</h1>
+          <p class="text-[10px] text-cyan-400 font-semibold uppercase tracking-widest">Logistics Admin</p>
+        </div>
+      </div>
+      <button onclick="toggleMobileSidebar(true)" class="lg:hidden text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 focus:outline-none" aria-label="Close sidebar">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 p-4 space-y-1.5 overflow-y-auto">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-white bg-brand-600 shadow-md shadow-brand-600/30">
+        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+        <span>Dashboard</span>
+      </button>
+
+      <button onclick="switchTab('shipments')" id="nav-shipments" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60">
+        <i class="fa-solid fa-truck-fast w-5 text-center"></i>
+        <span>Shipments</span>
+        <span id="badgeShipmentCount" class="ml-auto bg-brand-700/80 text-cyan-300 text-xs px-2 py-0.5 rounded-full font-semibold">2</span>
+      </button>
+
+      <button onclick="switchTab('create-shipment')" id="nav-create-shipment" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60">
+        <i class="fa-solid fa-circle-plus w-5 text-center"></i>
+        <span>Create Shipment</span>
+      </button>
+
+      <button onclick="switchTab('messages')" id="nav-messages" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60">
+        <i class="fa-solid fa-inbox w-5 text-center"></i>
+        <span>Contact Messages</span>
+        <span id="badgeUnreadCount" class="ml-auto bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">1</span>
+      </button>
+
+      <button onclick="switchTab('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60">
+        <i class="fa-solid fa-sliders w-5 text-center"></i>
+        <span>Company Settings</span>
+      </button>
+
+      <div class="pt-4 pb-2 px-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Public Quick Links</div>
+
+      <a href="/track-shipment" target="_blank" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-cyan-300 hover:bg-slate-800/40 transition">
+        <i class="fa-solid fa-arrow-up-right-from-square w-5 text-center"></i>
+        <span>Track Consignment</span>
+      </a>
+
+      <a href="/contacts" target="_blank" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-cyan-300 hover:bg-slate-800/40 transition">
+        <i class="fa-solid fa-arrow-up-right-from-square w-5 text-center"></i>
+        <span>Contact Page</span>
+      </a>
+
+      <a href="/" target="_blank" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-cyan-300 hover:bg-slate-800/40 transition">
+        <i class="fa-solid fa-arrow-up-right-from-square w-5 text-center"></i>
+        <span>Public Homepage</span>
+      </a>
+    </nav>
+
+    <!-- Admin User Footer -->
+    <div class="p-4 border-t border-slate-800/80">
+      <div class="flex items-center gap-3 px-2 py-2">
+        <div class="w-9 h-9 rounded-full bg-brand-700 flex items-center justify-center text-cyan-200 font-bold text-sm">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p id="adminUserFullName" class="text-sm font-semibold text-white truncate">Administrator</p>
+          <p id="adminUserEmail" class="text-xs text-slate-400 truncate">info@nexivanlogistics.com</p>
+        </div>
+        <button onclick="handleLogout()" title="Sign Out" class="text-slate-400 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-800 transition">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="sidebarBackdrop" onclick="toggleMobileSidebar(true)" class="fixed inset-0 z-30 bg-slate-900/60 backdrop-blur-xs hidden transition-opacity lg:hidden"></div>
+
+  <!-- ======================== MAIN CONTENT WRAPPER ======================== -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <!-- Top Header Bar -->
+    <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8 z-10">
+      <div class="flex items-center gap-3 min-w-0">
+        <!-- Hamburger Menu Button for Mobile -->
+        <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-brand-600 hover:bg-slate-100 focus:outline-none transition shrink-0" aria-label="Open Navigation">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+        <div class="truncate">
+          <h2 id="pageTitle" class="text-lg sm:text-xl font-bold text-slate-800 truncate">Dashboard Overview</h2>
+          <p id="pageSubtitle" class="text-xs text-slate-500 truncate">Live operational overview & statistics</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <!-- New Shipment Fast Action Button -->
+        <button onclick="switchTab('create-shipment')" class="px-3 sm:px-4 py-2 sm:py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-medium text-xs sm:text-sm rounded-xl shadow-md shadow-brand-600/20 flex items-center gap-1.5 sm:gap-2 transition">
+          <i class="fa-solid fa-plus text-xs"></i>
+          <span>New Shipment</span>
+        </button>
+
+        <div class="hidden sm:block h-6 w-px bg-slate-200"></div>
+
+        <!-- System Status Indicator -->
+        <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>PostgreSQL Active</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Body Views Container -->
+    <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 bg-slate-50/50">
+
+      <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+      <section id="view-dashboard" class="tab-view space-y-8">
+        <!-- Metrics Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Shipments</p>
+              <h3 id="statTotalShipments" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">0</h3>
+              <p class="text-xs text-brand-600 mt-2 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-boxes-stacked"></i> All registered cargo
+              </p>
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg sm:text-xl">
+              <i class="fa-solid fa-dolly"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">In Transit</p>
+              <h3 id="statInTransit" class="text-2xl sm:text-3xl font-extrabold text-brand-700 mt-1">0</h3>
+              <p class="text-xs text-sky-600 mt-2 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-route"></i> En route to destination
+              </p>
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-sky-50 text-brand-600 flex items-center justify-center text-lg sm:text-xl">
+              <i class="fa-solid fa-plane-departure"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Delivered</p>
+              <h3 id="statDelivered" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1">0</h3>
+              <p class="text-xs text-emerald-600 mt-2 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-circle-check"></i> Safely completed
+              </p>
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg sm:text-xl">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Inquiries / Messages</p>
+              <h3 id="statTotalMessages" class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">0</h3>
+              <p id="statUnreadSubtitle" class="text-xs text-rose-500 mt-2 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-envelope"></i> 0 unread messages
+              </p>
+            </div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg sm:text-xl">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Shipments & Inquiries Dual Columns -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <!-- Recent Shipments (2 cols) -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-slate-800 text-sm sm:text-base">Recent Consignments</h3>
+                <p class="text-xs text-slate-400">Latest active logistics movements</p>
+              </div>
+              <button onclick="switchTab('shipments')" class="text-xs font-semibold text-brand-600 hover:text-brand-800 flex items-center gap-1">
+                <span>View All</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[550px] text-left border-collapse text-sm">
+                <thead>
+                  <tr class="bg-slate-50/75 text-slate-400 text-xs uppercase font-semibold border-b border-slate-100">
+                    <th class="px-6 py-3.5">Tracking No</th>
+                    <th class="px-6 py-3.5">Route</th>
+                    <th class="px-6 py-3.5">Status</th>
+                    <th class="px-6 py-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardRecentShipmentsTable" class="divide-y divide-slate-100">
+                  <tr><td colspan="4" class="text-center py-6 text-slate-400">Loading recent shipments...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Inquiries (1 col) -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-slate-800 text-base">Contact Inquiries</h3>
+                <p class="text-xs text-slate-400">Website contact submissions</p>
+              </div>
+              <button onclick="switchTab('messages')" class="text-xs font-semibold text-brand-600 hover:text-brand-800 flex items-center gap-1">
+                <span>All Messages</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+              </button>
+            </div>
+
+            <div id="dashboardRecentMessagesList" class="p-4 divide-y divide-slate-100 overflow-y-auto flex-1 max-h-[380px]">
+              <p class="text-center py-6 text-slate-400 text-sm">Loading recent inquiries...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 2: SHIPMENTS MANAGER ==================== -->
+      <section id="view-shipments" class="tab-view space-y-6 hidden">
+        <!-- Consignment Creation Success Banner -->
+        <div id="shipmentCreatedAlertBanner" class="hidden p-4 sm:p-5 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all shadow-xs">
+          <div class="flex items-start sm:items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-lg">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-emerald-950" id="shipmentCreatedAlertTitle">Consignment Registered Successfully</h4>
+              <p class="text-xs text-emerald-800 mt-0.5" id="shipmentCreatedAlertDesc">Tracking Code: <strong id="shipmentCreatedAlertCode" class="font-mono text-emerald-950 font-bold">NX-000000</strong></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a id="shipmentCreatedAlertTrackBtn" href="#" target="_blank" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Track Consignment
+            </a>
+            <button type="button" onclick="document.getElementById('shipmentCreatedAlertBanner').classList.add('hidden')" class="p-2 text-emerald-700 hover:text-emerald-900 rounded-lg hover:bg-emerald-100 transition" title="Dismiss">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+              <input type="text" id="shipmentSearchInput" oninput="debounceLoadShipments()" placeholder="Search by tracking, shipper, receiver, city..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+            </div>
+
+            <select id="shipmentStatusFilter" onchange="loadShipments()" class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-medium text-slate-700">
+              <option value="all">All Statuses</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Picked Up">Picked Up</option>
+              <option value="Out for Delivery">Out for Delivery</option>
+              <option value="Delivered">Delivered</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-3 justify-end">
+            <button onclick="loadShipments()" class="flex-1 sm:flex-initial px-3.5 py-2 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-medium transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-arrows-rotate text-xs"></i>
+              <span>Refresh</span>
+            </button>
+            <button onclick="switchTab('create-shipment')" class="flex-1 sm:flex-initial px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-semibold transition shadow-md shadow-brand-600/20 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus text-xs"></i>
+              <span>New Shipment</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Shipments Data Table -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[850px] text-left border-collapse text-sm">
+              <thead>
+                <tr class="bg-slate-50 text-slate-400 text-xs uppercase font-semibold border-b border-slate-200/80">
+                  <th class="px-6 py-4">Tracking Code</th>
+                  <th class="px-6 py-4">Shipper / Receiver</th>
+                  <th class="px-6 py-4">Product & Freight</th>
+                  <th class="px-6 py-4">Route & Current Location</th>
+                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4">Milestones</th>
+                  <th class="px-6 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="shipmentsTableBody" class="divide-y divide-slate-100">
+                <tr><td colspan="7" class="text-center py-8 text-slate-400">Loading shipments...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span id="shipmentCountSummary">Showing 0 shipments</span>
+            <div class="flex items-center gap-2" id="shipmentPagination">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: CONTACT MESSAGES ==================== -->
+      <section id="view-messages" class="tab-view space-y-6 hidden">
+        <!-- Message Controls -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-4">
+            <button onclick="filterMessages('all')" class="msg-filter-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white" data-status="all">All Inquiries</button>
+            <button onclick="filterMessages('unread')" class="msg-filter-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100" data-status="unread">Unread Only</button>
+            <button onclick="filterMessages('replied')" class="msg-filter-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100" data-status="replied">Replied</button>
+          </div>
+
+          <button onclick="loadMessages()" class="self-stretch sm:self-auto px-3.5 py-2 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-arrows-rotate text-xs"></i>
+            <span>Refresh Messages</span>
+          </button>
+        </div>
+
+        <!-- Messages Grid -->
+        <div id="messagesContainer" class="space-y-4">
+          <p class="text-center py-8 text-slate-400">Loading inquiries...</p>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 4: COMPANY SETTINGS ==================== -->
+      <section id="view-settings" class="tab-view space-y-6 hidden">
+        <!-- Settings Header Banner -->
+        <div class="bg-gradient-to-r from-brand-navy via-slate-900 to-brand-800 text-white p-6 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-white/10 text-cyan-300 text-xs font-semibold uppercase tracking-wider">
+              <i class="fa-solid fa-globe"></i>
+              <span>Global Site Contact Info</span>
+            </div>
+            <h3 class="text-xl font-bold tracking-tight text-white">Company Contact & Communication Settings</h3>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Updating these values automatically updates all static contact info across the entire website in real time &mdash; including header topbar, footers, the Contact page, floating WhatsApp widget, and automated email notifications.
+            </p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span id="settingsLastUpdated" class="text-xs text-slate-400 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">Last updated: Checking...</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Main Settings Form (Left 2 cols) -->
+          <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+            <form id="companySettingsForm" onsubmit="handleSaveSettings(event)" class="space-y-5">
+              
+              <!-- 1. Support Email -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  <i class="fa-solid fa-envelope text-brand-600 mr-1.5"></i> Primary Contact / Support Email
+                </label>
+                <div class="relative">
+                  <i class="fa-solid fa-at absolute left-4 top-3.5 text-slate-400"></i>
+                  <input type="email" id="setCompanyEmail" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:bg-white text-sm transition" placeholder="info@nexivanlogistics.com" />
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1.5">Displayed on header, footer, contact cards, and receives new inquiry alerts.</p>
+              </div>
+
+              <!-- 2. Call Center / Phone Number -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  <i class="fa-solid fa-phone text-brand-600 mr-1.5"></i> Call Center / Direct Phone Number
+                </label>
+                <div class="relative">
+                  <i class="fa-solid fa-phone-volume absolute left-4 top-3.5 text-slate-400"></i>
+                  <input type="text" id="setCompanyPhone" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:bg-white text-sm transition" placeholder="+1 (915) 217-3598" />
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1.5">Formatted display phone. Dialed automatically when visitors tap "Need Help" or "Call Us".</p>
+              </div>
+
+              <!-- 3. WhatsApp Direct Contact -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  <i class="fa-brands fa-whatsapp text-emerald-600 mr-1.5"></i> WhatsApp Contact Number
+                </label>
+                <div class="relative">
+                  <i class="fa-brands fa-whatsapp absolute left-4 top-3.5 text-emerald-500 text-lg"></i>
+                  <input type="text" id="setCompanyWhatsapp" required class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white text-sm transition" placeholder="+1 (915) 217-3598 or 19152173598" />
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-slate-400 mt-1.5">
+                  <span>Used by the floating WhatsApp widget and Contact Us page.</span>
+                  <span id="setWhatsappRawBadge" class="text-emerald-600 font-semibold font-mono bg-emerald-50 px-2 py-0.5 rounded">wa.me/19152173598</span>
+                </div>
+              </div>
+
+              <!-- Form Buttons -->
+              <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                <button type="button" onclick="resetSettingsDefaults()" class="px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
+                  <i class="fa-solid fa-rotate-left mr-1"></i> Reset to Defaults
+                </button>
+                <div class="flex items-center gap-3">
+                  <button type="submit" id="saveSettingsBtn" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-brand-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Save & Apply Globally</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Live Preview & Diagnostics Panel (Right col) -->
+          <div class="space-y-6">
+            <!-- Card 1: Frontend Live Preview -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+              <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-eye text-brand-600"></i>
+                <span>Live Frontend Display Preview</span>
+              </h4>
+
+              <!-- Preview Item: Header -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Header Topbar Call</span>
+                <div class="flex items-center gap-2 text-xs text-brand-navy font-semibold">
+                  <i class="fa-solid fa-phone text-brand-600"></i>
+                  <span id="prevHeaderPhone">+1 (915) 217-3598</span>
+                </div>
+              </div>
+
+              <!-- Preview Item: WhatsApp -->
+              <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-100 space-y-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Floating WhatsApp Action</span>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-xs text-emerald-900 font-semibold">
+                    <i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i>
+                    <span id="prevWhatsapp">+1 (915) 217-3598</span>
+                  </div>
+                  <a id="prevWhatsappLink" href="https://wa.me/19152173598" target="_blank" class="text-[10px] text-emerald-700 hover:underline flex items-center gap-1 font-medium">
+                    <span>Test Chat</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Preview Item: Email -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Primary Contact Email</span>
+                <div class="flex items-center gap-2 text-xs text-brand-navy font-semibold truncate">
+                  <i class="fa-solid fa-envelope text-brand-600"></i>
+                  <span id="prevEmail" class="truncate">info@nexivanlogistics.com</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Quick Links to verify live site -->
+            <div class="bg-gradient-to-br from-slate-900 to-brand-navy p-6 rounded-2xl text-white shadow-sm space-y-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Instant Verification</span>
+              </h4>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                After saving, click any link below to verify the updated numbers and emails on the live pages:
+              </p>
+              <div class="space-y-2 pt-1">
+                <a href="/" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-slate-200 transition">
+                  <span>Home (Header & Footer)</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-cyan-400"></i>
+                </a>
+                <a href="/contacts" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-slate-200 transition">
+                  <span>Contacts (Call, WhatsApp, Email Cards)</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-cyan-400"></i>
+                </a>
+                <a href="/track-shipment" target="_blank" class="flex items-center justify-between px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-slate-200 transition">
+                  <span>Track Consignment Page</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-cyan-400"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 5: CREATE SHIPMENT (DEDICATED FULL PAGE) ==================== -->
+      <section id="view-create-shipment" class="tab-view space-y-6 hidden">
+        <!-- Page Top Header Banner -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <button type="button" onclick="switchTab('shipments')" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition shrink-0" title="Back to Shipments">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold mb-1">
+                <i class="fa-solid fa-circle-plus"></i> Consignment Registration Page
+              </div>
+              <h3 class="text-xl font-bold text-slate-800">Register New Consignment</h3>
+              <p class="text-xs text-slate-500 mt-0.5">Register a multi-item shipment into the logistics telemetry system</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="switchTab('shipments')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-medium transition">
+              Cancel
+            </button>
+            <button type="button" onclick="document.getElementById('createShipmentSubmitBtn').click()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-md shadow-brand-600/20 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-check"></i> Register Consignment
+            </button>
+          </div>
+        </div>
+
+        <!-- Create Shipment Error Banner -->
+        <div id="createShipmentErrorBanner" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 text-rose-800 text-sm shadow-xs">
+          <i class="fa-solid fa-circle-exclamation text-rose-500 text-base mt-0.5 shrink-0"></i>
+          <div class="flex-1">
+            <strong class="font-bold block mb-0.5">Could not register consignment</strong>
+            <span id="createShipmentErrorText">Please review the form requirements and try again.</span>
+          </div>
+          <button type="button" onclick="document.getElementById('createShipmentErrorBanner').classList.add('hidden')" class="text-rose-500 hover:text-rose-700 p-1" title="Dismiss">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Main Full-Page Creation Form -->
+        <form id="createShipmentForm" onsubmit="handleCreateShipment(event)" class="space-y-6">
+          
+          <!-- Card 1: Consignment Transit & Billing Specifications -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-barcode text-brand-600"></i>
+              <span>Consignment Identification &amp; Transportation</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider">Tracking Number</label>
+                  <button type="button" onclick="generateAndFillTrackingNumber()" class="text-[11px] text-brand-600 hover:text-brand-800 font-semibold flex items-center gap-1 transition">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Gen
+                  </button>
+                </div>
+                <input type="text" id="newTrackingNumber" value="" placeholder="Leave empty to auto-generate" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white uppercase font-mono font-bold" />
+                <span class="text-[11px] text-slate-400 mt-1 block">Leave empty to auto-generate NX-######</span>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Transportation Mode *</label>
+                <select id="newTransportMode" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white font-medium text-slate-700">
+                  <option value="" disabled selected>Select transport mode...</option>
+                  <option value="Road Freight">Road Freight (Truck &amp; Trailer)</option>
+                  <option value="Air Freight">Air Freight (Express Plane)</option>
+                  <option value="Ocean Freight">Ocean Freight (Container)</option>
+                  <option value="Rail Freight">Rail Freight (Train Freight)</option>
+                  <option value="Van Freight">Van Freight (Local Courier)</option>
+                  <option value="Drone Freight">Drone Express Delivery</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Payment Mode *</label>
+                <select id="newPaymentMode" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white font-medium text-slate-700">
+                  <option value="" disabled selected>Select payment mode...</option>
+                  <option value="Prepaid">Prepaid</option>
+                  <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                  <option value="Paid by Shipper">Paid by Shipper</option>
+                  <option value="Paid by Consignee">Paid by Consignee</option>
+                  <option value="Credit / Corporate Account">Credit / Corporate Account</option>
+                  <option value="Bank Wire Transfer">Bank Wire Transfer</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Consignment Status *</label>
+                <select id="newStatus" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white font-semibold text-brand-700">
+                  <option value="" disabled selected>Select initial status...</option>
+                  <option value="In Transit">In Transit</option>
+                  <option value="Picked Up">Picked Up</option>
+                  <option value="Out for Delivery">Out for Delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="On Hold">On Hold</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-1">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Total Freight</label>
+                <input type="text" id="newTotalFreight" value="" placeholder="e.g. $450.00 USD" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Pick Up Date *</label>
+                <input type="date" id="newPickupDate" value="" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Pick Up Time</label>
+                <input type="text" id="newPickupTime" value="" placeholder="e.g. 09:30 AM" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Expected Delivery Date *</label>
+                <input type="date" id="newEta" value="" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white font-semibold text-brand-700" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: DYNAMIC CARGO / PRODUCT ITEMIZER (At least 1 product required) -->
+          <div id="productItemizerCard" class="bg-white p-6 rounded-2xl border-2 border-brand-200 shadow-sm space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <h4 class="text-xs font-bold text-brand-800 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-boxes-stacked text-brand-600"></i>
+                  <span>Consignment Cargo &amp; Product Itemizer</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5">Add each item or product contained in this shipment. <strong>At least 1 product must be added.</strong></p>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold">
+                <i class="fa-solid fa-circle-exclamation text-brand-600"></i> At Least 1 Product Required
+              </span>
+            </div>
+
+            <!-- Product Input Row -->
+            <div class="p-4 bg-slate-50/80 border border-slate-200/80 rounded-xl space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3">
+                <div class="sm:col-span-2 md:col-span-4">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Product Description / Item Name *</label>
+                  <input type="text" id="createItemProduct" value="" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToCreateList();}" placeholder="e.g. High-Precision Optical Sensors" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-medium" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Package Type *</label>
+                  <input type="text" id="createItemPackageType" value="" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToCreateList();}" placeholder="e.g. Carton, Pallet, Box" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Dimensions</label>
+                  <input type="text" id="createItemDimensions" value="" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToCreateList();}" placeholder="e.g. 40x30x20 cm" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Weight</label>
+                  <input type="text" id="createItemWeight" value="" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToCreateList();}" placeholder="e.g. 15 kg" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Quantity (Qty) *</label>
+                  <input type="number" id="createItemQuantity" value="" min="1" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToCreateList();}" placeholder="e.g. 1" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-bold" />
+                </div>
+              </div>
+
+              <div class="flex items-center justify-end pt-1">
+                <button type="button" onclick="addProductItemToCreateList()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>Add Product to Consignment</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Added Products Table -->
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+              <table class="w-full text-left border-collapse text-sm min-w-[600px]">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-500 text-xs uppercase font-bold border-b border-slate-200">
+                    <th class="px-4 py-3" style="width: 50px;">#</th>
+                    <th class="px-4 py-3">Product Description</th>
+                    <th class="px-4 py-3">Package Type</th>
+                    <th class="px-4 py-3">Dimensions</th>
+                    <th class="px-4 py-3">Weight</th>
+                    <th class="px-4 py-3 text-right">Quantity</th>
+                    <th class="px-4 py-3 text-center" style="width: 80px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="createProductsTableBody" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State Warning Banner -->
+            <div id="createProductEmptyWarning" class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs flex items-center gap-2.5">
+              <i class="fa-solid fa-triangle-exclamation text-amber-500 text-lg shrink-0"></i>
+              <div>
+                <strong class="font-bold">No products added yet.</strong> Please enter item details above and click <strong>"Add Product to Consignment"</strong>. At least 1 product must be added before registering this consignment.
+              </div>
+            </div>
+
+            <!-- Summary counter -->
+            <div id="createProductSummaryRow" class="hidden flex items-center justify-between p-3 bg-brand-50/50 rounded-xl border border-brand-100 text-xs">
+              <span class="font-semibold text-slate-600">Cargo Totals:</span>
+              <div class="flex items-center gap-4">
+                <span class="font-medium text-slate-700">Distinct Products: <strong id="createTotalDistinctCount" class="text-brand-700">0</strong></span>
+                <span class="font-medium text-slate-700">Total Quantity: <strong id="createTotalUnitsCount" class="text-brand-700">0</strong> pcs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Shipper & Consignee Information -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Shipper Details -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                <i class="fa-solid fa-arrow-up-from-bracket text-brand-600"></i>
+                <span>Shipper (Sender) Information</span>
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Name *</label>
+                  <input type="text" id="newShipperName" value="" required placeholder="Company or individual sender name" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Phone</label>
+                  <input type="text" id="newShipperPhone" value="" placeholder="+1 (555) 000-0000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Email</label>
+                  <input type="email" id="newShipperEmail" value="" placeholder="shipper@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Address</label>
+                  <input type="text" id="newShipperAddress" value="" placeholder="123 Origin Blvd, City, State, Country" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Consignee Details -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                <i class="fa-solid fa-arrow-down-to-bracket text-emerald-600"></i>
+                <span>Consignee (Receiver) Information</span>
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Receiver Name *</label>
+                  <input type="text" id="newReceiverName" value="" required placeholder="Recipient full name" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Receiver Phone</label>
+                  <input type="text" id="newReceiverPhone" value="" placeholder="+1 (555) 111-2222" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Receiver Email</label>
+                  <input type="email" id="newReceiverEmail" value="" placeholder="receiver@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Destination Delivery Address *</label>
+                  <input type="text" id="newReceiverAddress" value="" required placeholder="456 Delivery Way, City, State, Country" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Route Hubs & Instructions -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-route text-brand-600"></i>
+              <span>Route, Instructions &amp; Initial Checkpoint</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Origin City / Hub *</label>
+                <input type="text" id="newOrigin" value="" required placeholder="e.g. Chicago, IL, USA" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Destination City *</label>
+                <input type="text" id="newDestination" value="" required placeholder="e.g. Los Angeles, CA, USA" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Current Facility Location</label>
+                <input type="text" id="newCurrentLocation" value="" placeholder="e.g. Chicago Hub Facility" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Comments &amp; Special Handling Instructions</label>
+                <textarea id="newComment" rows="2" placeholder="e.g. Fragile cargo. Maintain temperature controlled environment." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Initial Milestone / Checkpoint Description</label>
+                <textarea id="newInitialCheckpoint" rows="2" placeholder="Consignment registered and accepted at hub facility. Ready for transit." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 focus:bg-white"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Footer -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onclick="switchTab('shipments')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+              Cancel
+            </button>
+            <button type="submit" id="createShipmentSubmitBtn" class="px-8 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-brand-600/25 transition flex items-center gap-2">
+              <i class="fa-solid fa-check"></i>
+              <span>Register Consignment</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ==================== VIEW 6: EDIT SHIPMENT (DEDICATED FULL PAGE) ==================== -->
+      <section id="view-edit-shipment" class="tab-view space-y-6 hidden">
+        <!-- Header Banner with Barcode Preview -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <button type="button" onclick="switchTab('shipments')" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition shrink-0" title="Back to Shipments">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold mb-1">
+                <i class="fa-regular fa-pen-to-square"></i> Edit Consignment Page
+              </div>
+              <div class="flex items-center gap-3">
+                <h3 class="text-xl font-bold text-slate-800">Consignment <span id="editTrackingDisplay" class="font-mono text-brand-700">NX-000000</span></h3>
+                <span id="editStatusBadgeDisplay"></span>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Update shipment attributes, cargo items, route, or schedule</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div id="editBarcodePreview" class="hidden sm:block bg-white p-2 rounded-lg border border-slate-200 shadow-2xs max-w-[220px]"></div>
+            <button type="button" onclick="switchTab('shipments')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-medium transition">
+              Cancel
+            </button>
+            <button type="button" onclick="document.getElementById('editShipmentSubmitBtn').click()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-md shadow-brand-600/20 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-check"></i> Save Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Edit Form -->
+        <form id="editShipmentForm" onsubmit="handleEditShipment(event)" class="space-y-6">
+          <input type="hidden" id="editShipmentId" />
+          <input type="hidden" id="editTrackingNumber" />
+
+          <!-- Transit Settings -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-truck-fast text-brand-600"></i>
+              <span>Transportation &amp; Freight Billing Details</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Transportation Mode *</label>
+                <select id="editTransportMode" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-medium text-slate-700">
+                  <option value="Road Freight">Road Freight (Truck &amp; Trailer)</option>
+                  <option value="Air Freight">Air Freight (Express Plane)</option>
+                  <option value="Ocean Freight">Ocean Freight (Container)</option>
+                  <option value="Rail Freight">Rail Freight (Train)</option>
+                  <option value="Van Freight">Van Freight (Local Courier)</option>
+                  <option value="Drone Freight">Drone Express</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Payment Mode *</label>
+                <select id="editPaymentMode" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-medium text-slate-700">
+                  <option value="Prepaid">Prepaid</option>
+                  <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                  <option value="Paid by Shipper">Paid by Shipper</option>
+                  <option value="Paid by Consignee">Paid by Consignee</option>
+                  <option value="Credit / Corporate Account">Credit / Corporate Account</option>
+                  <option value="Bank Wire Transfer">Bank Wire Transfer</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Consignment Status *</label>
+                <select id="editStatus" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-semibold text-brand-700">
+                  <option value="In Transit">In Transit</option>
+                  <option value="Picked Up">Picked Up</option>
+                  <option value="Received at Hub">Received at Hub</option>
+                  <option value="Departed Facility">Departed Facility</option>
+                  <option value="Customs Cleared">Customs Cleared</option>
+                  <option value="Out for Delivery">Out for Delivery</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="On Hold">On Hold</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Total Freight Charge</label>
+                <input type="text" id="editTotalFreight" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-1">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Pick Up Date</label>
+                <input type="date" id="editPickupDate" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Pick Up Time</label>
+                <input type="text" id="editPickupTime" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Expected Delivery Date (ETA)</label>
+                <input type="date" id="editEta" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-semibold text-brand-700" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Current Location</label>
+                <input type="text" id="editCurrentLocation" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: DYNAMIC CARGO / PRODUCT ITEMIZER FOR EDIT -->
+          <div id="editProductItemizerCard" class="bg-white p-6 rounded-2xl border-2 border-brand-200 shadow-sm space-y-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <h4 class="text-xs font-bold text-brand-800 uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-boxes-stacked text-brand-600"></i>
+                  <span>Consignment Cargo Items</span>
+                </h4>
+                <p class="text-xs text-slate-500 mt-0.5">Manage itemized cargo specifications. <strong>At least 1 product must remain.</strong></p>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold">
+                <i class="fa-solid fa-shield-halved text-brand-600"></i> Relational Cargo Items
+              </span>
+            </div>
+
+            <!-- Add Item Row -->
+            <div class="p-4 bg-slate-50/80 border border-slate-200/80 rounded-xl space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3">
+                <div class="sm:col-span-2 md:col-span-4">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Product Description / Item Name</label>
+                  <input type="text" id="editItemProduct" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToEditList();}" placeholder="e.g. Server Component Racks" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-medium" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Package Type</label>
+                  <input type="text" id="editItemPackageType" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToEditList();}" placeholder="e.g. Wooden Crate" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Dimensions</label>
+                  <input type="text" id="editItemDimensions" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToEditList();}" placeholder="e.g. 50x40x30 cm" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Weight</label>
+                  <input type="text" id="editItemWeight" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToEditList();}" placeholder="e.g. 20 kg" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-1 md:col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Qty</label>
+                  <input type="number" id="editItemQuantity" min="1" onkeydown="if(event.key==='Enter'){event.preventDefault(); addProductItemToEditList();}" placeholder="1" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-bold" />
+                </div>
+              </div>
+
+              <div class="flex items-center justify-end pt-1">
+                <button type="button" onclick="addProductItemToEditList()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold transition shadow-md shadow-brand-600/20 flex items-center gap-2">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>Add Item to List</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Added Products Table -->
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+              <table class="w-full text-left border-collapse text-sm min-w-[600px]">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-500 text-xs uppercase font-bold border-b border-slate-200">
+                    <th class="px-4 py-3" style="width: 50px;">#</th>
+                    <th class="px-4 py-3">Product Description</th>
+                    <th class="px-4 py-3">Package Type</th>
+                    <th class="px-4 py-3">Dimensions</th>
+                    <th class="px-4 py-3">Weight</th>
+                    <th class="px-4 py-3 text-right">Quantity</th>
+                    <th class="px-4 py-3 text-center" style="width: 80px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="editProductsTableBody" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="editProductEmptyWarning" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs flex items-center gap-2.5">
+              <i class="fa-solid fa-circle-exclamation text-rose-500 text-lg shrink-0"></i>
+              <div><strong class="font-bold">Error:</strong> At least 1 product item must remain in the consignment.</div>
+            </div>
+
+            <div id="editProductSummaryRow" class="flex items-center justify-between p-3 bg-brand-50/50 rounded-xl border border-brand-100 text-xs">
+              <span class="font-semibold text-slate-600">Cargo Totals:</span>
+              <div class="flex items-center gap-4">
+                <span class="font-medium text-slate-700">Distinct Products: <strong id="editTotalDistinctCount" class="text-brand-700">0</strong></span>
+                <span class="font-medium text-slate-700">Total Quantity: <strong id="editTotalUnitsCount" class="text-brand-700">0</strong> pcs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipper & Consignee Details -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                <i class="fa-solid fa-arrow-up-from-bracket text-brand-600"></i> Shipper (Sender)
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Name *</label>
+                  <input type="text" id="editShipperName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Phone</label>
+                  <input type="text" id="editShipperPhone" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Email</label>
+                  <input type="email" id="editShipperEmail" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Shipper Address</label>
+                  <input type="text" id="editShipperAddress" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+                <i class="fa-solid fa-arrow-down-to-bracket text-emerald-600"></i> Consignee (Receiver)
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Receiver Name *</label>
+                  <input type="text" id="editReceiverName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Receiver Phone</label>
+                  <input type="text" id="editReceiverPhone" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Receiver Email</label>
+                  <input type="email" id="editReceiverEmail" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-medium text-slate-600 mb-1">Destination Delivery Address *</label>
+                  <input type="text" id="editReceiverAddress" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Route Details & Comments -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 pb-3">
+              <i class="fa-solid fa-route text-brand-600"></i> Route &amp; Comments
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Origin City / Hub *</label>
+                <input type="text" id="editOrigin" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Destination City *</label>
+                <input type="text" id="editDestination" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <label class="block text-xs font-medium text-slate-600 mb-1">Comments &amp; Special Handling Instructions</label>
+              <textarea id="editComment" rows="2" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600"></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Footer -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onclick="switchTab('shipments')" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+              Cancel
+            </button>
+            <button type="submit" id="editShipmentSubmitBtn" class="px-8 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-sm shadow-md shadow-brand-600/25 transition flex items-center gap-2">
+              <i class="fa-solid fa-check"></i>
+              <span>Save Consignment Changes</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== MODAL: MANAGE CHECKPOINTS ==================== -->
+  <div id="checkpointsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-3 sm:p-6">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-100">
+      <div class="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div>
+          <h3 id="cpModalTrackingTitle" class="font-bold text-slate-800 text-base sm:text-lg">Consignment Milestones</h3>
+          <p class="text-xs text-slate-500">Add transit checkpoints and update live tracking timeline</p>
+        </div>
+        <button onclick="closeModal('checkpointsModal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1">
+        <!-- New Checkpoint Form -->
+        <form id="addCheckpointForm" onsubmit="handleAddCheckpoint(event)" class="p-4 bg-brand-50/70 border border-brand-100 rounded-2xl space-y-3">
+          <input type="hidden" id="cpShipmentId" />
+          <h4 class="text-xs font-bold text-brand-800 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-location-dot text-brand-600"></i> Add New Checkpoint
+          </h4>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Checkpoint Location *</label>
+              <input type="text" id="cpLocation" required placeholder="e.g. Denver Transit Sorting Facility, CO" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Updated Status *</label>
+              <select id="cpStatus" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600 font-semibold">
+                <option value="Picked Up">Picked Up</option>
+                <option value="Received at Hub">Received at Hub</option>
+                <option value="In Transit" selected>In Transit</option>
+                <option value="Departed Facility">Departed Facility</option>
+                <option value="Customs Cleared">Customs Cleared</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+                <option value="On Hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Event Description</label>
+            <input type="text" id="cpDescription" placeholder="Package scanned and departing on overnight dispatch." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" />
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+            <label class="flex items-center gap-2 text-xs text-slate-600 cursor-pointer">
+              <input type="checkbox" id="cpNotifyCustomer" checked class="rounded text-brand-600 focus:ring-brand-500" />
+              <span>Send automated email alert to customer</span>
+            </label>
+
+            <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-xs transition shadow-sm text-center">
+              <i class="fa-solid fa-plus mr-1"></i> Add Milestone
+            </button>
+          </div>
+        </form>
+
+        <!-- Existing Checkpoints List -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Timeline History</h4>
+          <div id="checkpointsTimelineList" class="space-y-3">
+            <!-- Timeline items rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: MESSAGE DETAILS & REPLY ==================== -->
+  <div id="messageModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-3 sm:p-6">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-100">
+      <div class="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div>
+          <h3 class="font-bold text-slate-800 text-base sm:text-lg">Inquiry Details</h3>
+          <p id="msgReceivedDate" class="text-xs text-slate-500">Submitted on date</p>
+        </div>
+        <button onclick="closeModal('messageModal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-600 flex items-center justify-center">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 sm:p-6 overflow-y-auto space-y-4 flex-1">
+        <input type="hidden" id="activeMessageId" />
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <div>
+            <p class="text-xs text-slate-400 font-bold uppercase">Customer Name</p>
+            <p id="msgSenderName" class="text-sm font-semibold text-slate-800 mt-0.5">-</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-400 font-bold uppercase">Phone Number</p>
+            <p id="msgPhone" class="text-sm font-semibold text-slate-800 mt-0.5">-</p>
+          </div>
+          <div class="sm:col-span-2">
+            <p class="text-xs text-slate-400 font-bold uppercase">Email Address</p>
+            <p id="msgEmail" class="text-sm font-semibold text-brand-600 mt-0.5 break-all">-</p>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-xs text-slate-400 font-bold uppercase mb-1.5">Question / Message Body</p>
+          <div id="msgBody" class="p-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 leading-relaxed whitespace-pre-line min-h-[100px]">
+            -
+          </div>
+        </div>
+
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-100">
+          <button onclick="deleteActiveMessage()" class="w-full sm:w-auto text-rose-600 hover:text-rose-800 text-xs font-semibold flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg hover:bg-rose-50 transition">
+            <i class="fa-regular fa-trash-can"></i> Delete Message
+          </button>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+            <button onclick="markActiveMessageStatus('read')" id="msgMarkReadBtn" class="w-full sm:w-auto px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition text-center">
+              Mark Read
+            </button>
+            <a id="msgReplyMailto" href="#" target="_blank" onclick="markActiveMessageStatus('replied')" class="w-full sm:w-auto px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm text-center">
+              <i class="fa-solid fa-reply text-xs"></i> Reply via Email
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- ==================== MODAL: CONSIGNMENT CREATED SUCCESS ==================== -->
+  <div id="consignmentSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-3 sm:p-6">
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden border border-slate-100">
+      <button type="button" onclick="closeModal('consignmentSuccessModal')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition z-10" title="Close">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+      <div class="p-6 text-center border-b border-slate-100 bg-gradient-to-b from-emerald-50/70 to-white">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 shadow-inner">
+          <i class="fa-solid fa-circle-check text-3xl"></i>
+        </div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-2">
+          Registration Complete
+        </div>
+        <h3 class="text-xl font-extrabold text-slate-800">Consignment Registered!</h3>
+        <p class="text-xs text-slate-500 mt-1">Consignment saved to database and linked with relational cargo items.</p>
+        
+        <!-- Tracking Badge Box -->
+        <div class="mt-4 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 flex items-center justify-between gap-3">
+          <div class="text-left">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">Waybill / Tracking No</span>
+            <span id="successModalTracking" class="font-mono font-extrabold text-lg text-brand-700 tracking-wider">NX-000000</span>
+          </div>
+          <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('successModalTracking').textContent); showToast('Copied tracking code to clipboard');" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition">
+            <i class="fa-regular fa-copy"></i>
+            <span>Copy</span>
+          </button>
+        </div>
+
+        <!-- Barcode Preview -->
+        <div id="successModalBarcode" class="mt-3 bg-white p-2 rounded-xl border border-slate-200 flex justify-center"></div>
+      </div>
+
+      <!-- Quick Summary Box -->
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-slate-400 font-bold block mb-0.5">Route</span>
+            <span id="successModalRoute" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-slate-400 font-bold block mb-0.5">Consignment Cargo</span>
+            <span id="successModalCargo" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+        </div>
+
+        <!-- Action Links -->
+        <div class="space-y-2 pt-1">
+          <a id="successModalTrackLink" href="#" target="_blank" class="w-full py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-brand-600/20 transition">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>View Public Tracking Page &amp; Live Telemetry</span>
+          </a>
+
+          <a id="successModalPrintLink" href="#" target="_blank" class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-print"></i>
+            <span>Print Official Air Waybill (AWB)</span>
+          </a>
+
+          <button type="button" id="successModalCheckpointsBtn" class="w-full py-2.5 px-4 bg-sky-50 hover:bg-sky-100 text-sky-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 border border-sky-200/60 transition">
+            <i class="fa-solid fa-timeline"></i>
+            <span>Add Checkpoints &amp; Transit Milestones</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('consignmentSuccessModal'); initCreateShipmentPage();" class="text-xs font-semibold text-brand-600 hover:text-brand-800 py-2 px-3 rounded-lg hover:bg-brand-50 transition">
+            <i class="fa-solid fa-plus mr-1"></i> Register Another
+          </button>
+          <button type="button" onclick="closeModal('consignmentSuccessModal'); switchTab('shipments');" class="text-xs font-medium text-slate-500 hover:text-slate-800 py-2 px-3 rounded-lg hover:bg-slate-100 transition">
+            Go to Shipments List &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Alert -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium transition-all transform translate-y-24 opacity-0 pointer-events-none">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+    <span id="toastMsg">Operation successful</span>
+  </div>
+
+  <!-- ======================== APPLICATION LOGIC JS ======================== -->
+  <script>
+    const API_BASE = window.location.origin + '/api';
+    let currentAdmin = null;
+    let currentTab = 'dashboard';
+    let currentMessageFilter = 'all';
+
+    // Pure JS Code 128 (Subtype B) Barcode Generator for Waybill & Consignment preview
+    const CODE128_PATTERNS = [
+      '212222', '222122', '222221', '121223', '121322', '131222', '122213', '122312', '132212', '221213',
+      '221312', '231212', '112232', '122132', '122231', '113222', '123122', '123221', '223211', '221132',
+      '221231', '213212', '223112', '312131', '311222', '321122', '321221', '312212', '322112', '322211',
+      '212123', '212321', '232121', '111323', '131123', '131321', '112313', '132113', '132311', '211313',
+      '231113', '231311', '112133', '112331', '132131', '113123', '113321', '133121', '313121', '211331',
+      '231131', '213113', '213311', '213131', '311123', '311321', '331121', '312113', '312311', '332111',
+      '314111', '221411', '431111', '111224', '111422', '121124', '121421', '141122', '141221', '112214',
+      '112412', '122114', '122411', '142112', '142211', '241211', '221114', '413111', '241112', '134111',
+      '111242', '121142', '121241', '114212', '124112', '124211', '411212', '421112', '421211', '212141',
+      '214121', '412121', '111143', '111341', '131141', '114113', '114311', '411113', '411311', '113141',
+      '114131', '311141', '411131', '211412', '211214', '211232', '2331112'
+    ];
+
+    function generateBarcodeSVG(rawText, options) {
+      options = options || {};
+      const height = options.height || 42;
+      const barWidth = options.barWidth || 1.6;
+      const quietZone = options.quietZone !== undefined ? options.quietZone : 12;
+      const showText = options.showText !== false;
+      const textColor = options.textColor || '#0b1e36';
+
+      const cleanText = String(rawText || 'NX-000000').toUpperCase().replace(/[^A-Z0-9\-\.\s\/$%+]/g, '');
+      const codes = [104];
+      let checkSum = 104;
+
+      for (let i = 0; i < cleanText.length; i++) {
+        const code = cleanText.charCodeAt(i) - 32;
+        if (code >= 0 && code <= 95) {
+          codes.push(code);
+          checkSum += code * (i + 1);
+        }
+      }
+
+      codes.push(checkSum % 103);
+      codes.push(106);
+
+      let fullPattern = '';
+      for (let i = 0; i < codes.length; i++) {
+        fullPattern += CODE128_PATTERNS[codes[i]] || '';
+      }
+
+      let totalUnits = 0;
+      for (let i = 0; i < fullPattern.length; i++) {
+        totalUnits += parseInt(fullPattern[i], 10);
+      }
+
+      const svgWidth = totalUnits * barWidth + quietZone * 2;
+      const svgHeight = showText ? height + 22 : height;
+
+      let x = quietZone;
+      let rects = '';
+
+      for (let i = 0; i < fullPattern.length; i++) {
+        const w = parseInt(fullPattern[i], 10) * barWidth;
+        const isBar = i % 2 === 0;
+        if (isBar) {
+          rects += '<rect x="' + x + '" y="0" width="' + w + '" height="' + height + '" fill="#0b1e36" />';
+        }
+        x += w;
+      }
+
+      let textSvg = '';
+      if (showText) {
+        textSvg = '<text x="' + (svgWidth / 2) + '" y="' + (height + 15) + '" font-family="\'Courier New\', Courier, monospace" font-size="11" font-weight="700" fill="' + textColor + '" text-anchor="middle" letter-spacing="1.5">* ' + cleanText + ' *</text>';
+      }
+
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + svgWidth + ' ' + svgHeight + '" style="max-width: 100%; height: auto; display: block; margin: 0 auto;"><rect width="100%" height="100%" fill="#ffffff" rx="4"/>' + rects + textSvg + '</svg>';
+    }
+
+    // Toast helper
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = msg;
+      if (isError) {
+        toastIcon.className = 'fa-solid fa-triangle-exclamation text-rose-400 text-base';
+      } else {
+        toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+      }
+
+      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Mobile Sidebar Toggle
+    function toggleMobileSidebar(forceClose = false) {
+      const sidebar = document.getElementById('mainSidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (!sidebar || !backdrop) return;
+
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (forceClose || !isClosed) {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      }
+    }
+
+    // Tab Switching
+    function switchTab(tabId) {
+      if (window.innerWidth < 1024) {
+        toggleMobileSidebar(true);
+      }
+
+      currentTab = tabId;
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.className = 'nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60';
+      });
+
+      const activeView = document.getElementById(`view-${tabId}`);
+      if (activeView) activeView.classList.remove('hidden');
+
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) {
+        activeNav.className = 'nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition text-white bg-brand-600 shadow-md shadow-brand-600/30';
+      }
+
+      const titleEl = document.getElementById('pageTitle');
+      const subtitleEl = document.getElementById('pageSubtitle');
+
+      if (tabId === 'dashboard') {
+        titleEl.textContent = 'Dashboard Overview';
+        subtitleEl.textContent = 'Live operational metrics & statistics';
+        loadDashboardStats();
+      } else if (tabId === 'shipments') {
+        titleEl.textContent = 'Shipment Management';
+        subtitleEl.textContent = 'Create, track and update consignments and checkpoints';
+        loadShipments();
+      } else if (tabId === 'messages') {
+        titleEl.textContent = 'Customer Inquiries & Messages';
+        subtitleEl.textContent = 'Submissions from website contact form';
+        loadMessages();
+      } else if (tabId === 'settings') {
+        titleEl.textContent = 'Company Settings';
+        subtitleEl.textContent = 'Manage email, phone numbers, WhatsApp, and global contact points';
+        loadCompanySettings();
+      } else if (tabId === 'create-shipment') {
+        titleEl.textContent = 'Register New Consignment';
+        subtitleEl.textContent = 'Consignment entry, multi-product cargo itemizer, and waybill assignment';
+        initCreateShipmentPage();
+      } else if (tabId === 'edit-shipment') {
+        titleEl.textContent = 'Edit Consignment';
+        subtitleEl.textContent = 'Update freight specifications, cargo items, route, or schedule';
+      }
+    }
+
+    // Status Badge Helper
+    function renderStatusBadge(status) {
+      const s = (status || '').toLowerCase();
+      let badgeClass = 'badge-pending';
+      if (s.includes('transit') || s.includes('departed')) badgeClass = 'badge-in-transit';
+      else if (s.includes('delivered')) badgeClass = 'badge-delivered';
+      else if (s.includes('out for delivery')) badgeClass = 'badge-out-for-delivery';
+      else if (s.includes('hold') || s.includes('cancel')) badgeClass = 'badge-on-hold';
+
+      return `<span class="status-badge ${badgeClass}"><i class="fa-solid fa-circle text-[6px] mr-1.5"></i>${status}</span>`;
+    }
+
+    // ----------------------------------------------------
+    // AUTHENTICATION LOGIC
+    // ----------------------------------------------------
+    async function checkAuth() {
+      try {
+        const token = localStorage.getItem('nexivan_token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+        const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include', headers });
+        const data = await res.json();
+
+        if (data.success && data.admin) {
+          currentAdmin = data.admin;
+          document.getElementById('adminUserFullName').textContent = data.admin.fullName || data.admin.username;
+          document.getElementById('adminUserEmail').textContent = data.admin.email;
+          closeModal('loginModal');
+          loadDashboardStats();
+        } else {
+          openModal('loginModal');
+        }
+      } catch (err) {
+        openModal('loginModal');
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
+      const errorText = document.getElementById('loginErrorText');
+
+      errorDiv.classList.add('hidden');
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem('nexivan_token', data.token);
+          currentAdmin = data.admin;
+          document.getElementById('adminUserFullName').textContent = data.admin.fullName || data.admin.username;
+          document.getElementById('adminUserEmail').textContent = data.admin.email;
+          closeModal('loginModal');
+          showToast('Welcome back, ' + (data.admin.fullName || data.admin.username));
+          loadDashboardStats();
+        } else {
+          errorText.textContent = data.message || 'Login failed';
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (err) {
+        errorText.textContent = 'Server connection error. Ensure backend is running.';
+        errorDiv.classList.remove('hidden');
+      }
+    });
+
+    async function handleLogout() {
+      try {
+        const token = localStorage.getItem('nexivan_token');
+        await fetch(`${API_BASE}/auth/logout`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+      } catch (e) {}
+      localStorage.removeItem('nexivan_token');
+      currentAdmin = null;
+      const uField = document.getElementById('loginUsername');
+      const pField = document.getElementById('loginPassword');
+      if (uField) uField.value = '';
+      if (pField) pField.value = '';
+      const err = document.getElementById('loginError');
+      if (err) err.classList.add('hidden');
+      openModal('loginModal');
+    }
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem('nexivan_token');
+      return {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+      };
+    }
+
+    // ----------------------------------------------------
+    // DASHBOARD DATA
+    // ----------------------------------------------------
+    async function loadDashboardStats() {
+      try {
+        const res = await fetch(`${API_BASE}/admin/stats`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        if (res.status === 401) return openModal('loginModal');
+
+        const data = await res.json();
+        if (!data.success) return;
+
+        const m = data.metrics;
+        document.getElementById('statTotalShipments').textContent = m.totalShipments;
+        document.getElementById('statInTransit').textContent = m.inTransitShipments;
+        document.getElementById('statDelivered').textContent = m.deliveredShipments;
+        document.getElementById('statTotalMessages').textContent = m.totalMessages;
+        document.getElementById('statUnreadSubtitle').innerHTML = `<i class="fa-solid fa-envelope"></i> ${m.unreadMessages} unread messages`;
+
+        document.getElementById('badgeShipmentCount').textContent = m.totalShipments;
+        document.getElementById('badgeUnreadCount').textContent = m.unreadMessages;
+        if (m.unreadMessages === 0) {
+          document.getElementById('badgeUnreadCount').classList.add('hidden');
+        } else {
+          document.getElementById('badgeUnreadCount').classList.remove('hidden');
+        }
+
+        // Render Recent Shipments Table
+        const recentTable = document.getElementById('dashboardRecentShipmentsTable');
+        if (data.recentShipments.length === 0) {
+          recentTable.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400">No shipments found. Click "New Shipment" to create one.</td></tr>`;
+        } else {
+          recentTable.innerHTML = data.recentShipments.map(s => `
+            <tr class="hover:bg-slate-50/80 transition">
+              <td class="px-6 py-4 font-mono font-bold text-brand-700">
+                <a href="/track-shipment?tracking=${encodeURIComponent(s.tracking_number)}" target="_blank" class="hover:underline flex items-center gap-1.5">
+                  <span>${s.tracking_number}</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-400"></i>
+                </a>
+              </td>
+              <td class="px-6 py-4">
+                <div class="font-medium text-slate-800">${s.origin} &rarr; ${s.destination}</div>
+                <div class="text-xs text-slate-500 font-medium">${s.product ? `${s.product} &bull; ` : ''}${s.transport_mode || s.service_type || 'Freight'}</div>
+              </td>
+              <td class="px-6 py-4">${renderStatusBadge(s.status)}</td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="openEditShipmentPage(${s.id})" title="Edit Consignment" class="p-1.5 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition">
+                    <i class="fa-regular fa-pen-to-square text-xs"></i>
+                  </button>
+                  <button onclick="openCheckpointsModal(${s.id}, '${s.tracking_number}')" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 text-slate-600 hover:text-brand-600 rounded-lg text-xs font-semibold transition">
+                    <i class="fa-solid fa-timeline mr-1"></i> (${s.checkpoint_count || 0})
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        // Render Recent Messages List
+        const recentMsgList = document.getElementById('dashboardRecentMessagesList');
+        if (data.recentMessages.length === 0) {
+          recentMsgList.innerHTML = `<p class="text-center py-6 text-slate-400 text-sm">No inquiries received yet.</p>`;
+        } else {
+          recentMsgList.innerHTML = data.recentMessages.map(msg => `
+            <div onclick="viewMessageDetails(${JSON.stringify(msg).replace(/"/g, '&quot;')})" class="py-3 px-3 rounded-xl hover:bg-slate-50 cursor-pointer transition flex items-start gap-3">
+              <div class="w-9 h-9 rounded-full ${msg.status === 'unread' ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'} flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                ${msg.first_name[0]}${msg.last_name[0]}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <h5 class="text-sm font-semibold text-slate-800 truncate">${msg.first_name} ${msg.last_name}</h5>
+                  <span class="text-[10px] text-slate-400">${new Date(msg.created_at).toLocaleDateString()}</span>
+                </div>
+                <p class="text-xs text-slate-500 truncate mt-0.5">${msg.message}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Failed to load stats', err);
+      }
+    }
+
+    // ----------------------------------------------------
+    // SHIPMENTS LIST & CRUD
+    // ----------------------------------------------------
+    let shipmentDebounceTimer;
+    function debounceLoadShipments() {
+      clearTimeout(shipmentDebounceTimer);
+      shipmentDebounceTimer = setTimeout(loadShipments, 300);
+    }
+
+    async function loadShipments(page = 1) {
+      const q = document.getElementById('shipmentSearchInput')?.value || '';
+      const status = document.getElementById('shipmentStatusFilter')?.value || 'all';
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments?q=${encodeURIComponent(q)}&status=${encodeURIComponent(status)}&page=${page}&limit=20`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        if (res.status === 401) return openModal('loginModal');
+
+        const data = await res.json();
+        if (!data.success) return;
+
+        const tbody = document.getElementById('shipmentsTableBody');
+        const countSummary = document.getElementById('shipmentCountSummary');
+        countSummary.textContent = `Showing ${data.shipments.length} of ${data.total} consignments`;
+
+        if (data.shipments.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-12 text-slate-400">No consignments found matching your criteria.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.shipments.map(s => `
+          <tr class="hover:bg-slate-50/70 transition">
+            <td class="px-6 py-4 font-mono font-bold text-brand-700 whitespace-nowrap">
+              <div class="flex items-center gap-2">
+                <a href="/track-shipment?tracking=${encodeURIComponent(s.tracking_number)}" target="_blank" class="hover:underline text-brand-600 font-bold">
+                  ${s.tracking_number}
+                </a>
+                <button onclick="navigator.clipboard.writeText('${s.tracking_number}'); showToast('Copied tracking code to clipboard');" title="Copy tracking number" class="text-slate-400 hover:text-slate-600 text-xs">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+              <div class="text-[11px] text-slate-400 font-sans font-normal mt-0.5">Created: ${new Date(s.created_at).toLocaleDateString()}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-medium text-slate-800">${s.shipper_name}</div>
+              <div class="text-xs text-slate-500">&rarr; ${s.receiver_name}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-cube text-brand-600"></i>
+                <span>${s.product || s.package_type || 'General Freight'}</span>
+                ${s.quantity ? `<span class="bg-brand-50 text-brand-700 text-[10px] font-bold px-1.5 py-0.5 rounded border border-brand-200/50">${s.quantity} pcs</span>` : ''}
+              </div>
+              <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5 flex-wrap">
+                <span class="font-medium text-slate-700">${s.transport_mode || s.service_type || 'Road Freight'}</span>
+                ${s.payment_mode ? `<span class="bg-slate-100 text-slate-600 text-[10px] px-1.5 py-0.5 rounded font-medium">${s.payment_mode}</span>` : ''}
+                ${s.total_freight ? `<span class="font-bold text-emerald-600 text-xs">${s.total_freight}</span>` : ''}
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-slate-800 font-medium text-xs">${s.origin} &rarr; ${s.destination}</div>
+              <div class="text-xs text-brand-600 flex items-center gap-1 mt-0.5">
+                <i class="fa-solid fa-location-dot text-[10px]"></i> Current: ${s.current_location || s.origin}
+              </div>
+              ${s.estimated_delivery_date ? `<div class="text-[10px] text-slate-400 mt-0.5">ETA: ${s.estimated_delivery_date.split('T')[0]}</div>` : ''}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              ${renderStatusBadge(s.status)}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <button onclick="openCheckpointsModal(${s.id}, '${s.tracking_number}')" class="px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold rounded-lg text-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-timeline text-brand-600"></i>
+                <span>Checkpoints (${s.checkpoint_count || 0})</span>
+              </button>
+            </td>
+            <td class="px-6 py-4 text-right whitespace-nowrap">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="openEditShipmentPage(${s.id})" title="Edit Consignment Details" class="p-2 text-slate-400 hover:text-brand-600 rounded-lg hover:bg-brand-50 transition">
+                  <i class="fa-regular fa-pen-to-square text-sm"></i>
+                </button>
+                <button onclick="deleteShipment(${s.id}, '${s.tracking_number}')" title="Delete consignment" class="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
+                  <i class="fa-regular fa-trash-can text-sm"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        console.error('Failed to load shipments', err);
+      }
+    }
+
+    // ----------------------------------------------------
+    // CARGO PRODUCT ITEMIZER & CONSIGNMENT MANAGEMENT
+    // ----------------------------------------------------
+    let createShipmentProducts = [];
+    let editShipmentProducts = [];
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // ---------------- Create Page Itemizer ----------------
+    function renderCreateProductsTable() {
+      const tbody = document.getElementById('createProductsTableBody');
+      const emptyWarn = document.getElementById('createProductEmptyWarning');
+      const summaryRow = document.getElementById('createProductSummaryRow');
+      const distinctCountEl = document.getElementById('createTotalDistinctCount');
+      const unitsCountEl = document.getElementById('createTotalUnitsCount');
+
+      if (!tbody) return;
+
+      if (createShipmentProducts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400 italic">No products added yet. Add at least 1 product above.</td></tr>`;
+        if (emptyWarn) emptyWarn.classList.remove('hidden');
+        if (summaryRow) summaryRow.classList.add('hidden');
+        return;
+      }
+
+      if (emptyWarn) emptyWarn.classList.add('hidden');
+      if (summaryRow) summaryRow.classList.remove('hidden');
+
+      const totalUnits = createShipmentProducts.reduce((acc, p) => acc + (parseInt(p.quantity, 10) || 1), 0);
+      if (distinctCountEl) distinctCountEl.textContent = createShipmentProducts.length;
+      if (unitsCountEl) unitsCountEl.textContent = totalUnits;
+
+      tbody.innerHTML = createShipmentProducts.map((p, idx) => `
+        <tr class="hover:bg-slate-50/70 transition">
+          <td class="px-4 py-3 font-semibold text-slate-400">${idx + 1}</td>
+          <td class="px-4 py-3 font-bold text-slate-800">${escapeHtml(p.product_name || p.product || 'Standard Cargo')}</td>
+          <td class="px-4 py-3 text-slate-600"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs">${escapeHtml(p.package_type || 'Standard')}</span></td>
+          <td class="px-4 py-3 text-slate-500 font-mono">${escapeHtml(p.dimensions || '-')}</td>
+          <td class="px-4 py-3 text-slate-500">${escapeHtml(p.weight || '-')}</td>
+          <td class="px-4 py-3 text-right font-extrabold text-brand-700">${p.quantity || 1}</td>
+          <td class="px-4 py-3 text-center">
+            <button type="button" onclick="removeCreateProductItem(${idx})" title="Remove product" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function addProductItemToCreateList() {
+      const nameInput = document.getElementById('createItemProduct');
+      const typeInput = document.getElementById('createItemPackageType');
+      const dimInput = document.getElementById('createItemDimensions');
+      const weightInput = document.getElementById('createItemWeight');
+      const qtyInput = document.getElementById('createItemQuantity');
+
+      const product_name = (nameInput?.value || '').trim();
+      const package_type = (typeInput?.value || '').trim() || 'Standard Parcel';
+      const dimensions = (dimInput?.value || '').trim();
+      const weight = (weightInput?.value || '').trim();
+      const quantity = parseInt(qtyInput?.value, 10) || 1;
+
+      if (!product_name) {
+        showToast('Please enter a Product Description / Item Name.', true);
+        if (nameInput) nameInput.focus();
+        return;
+      }
+
+      createShipmentProducts.push({
+        product_name,
+        package_type,
+        dimensions,
+        weight,
+        quantity: Math.max(1, quantity)
+      });
+
+      if (nameInput) nameInput.value = '';
+      if (typeInput) typeInput.value = '';
+      if (dimInput) dimInput.value = '';
+      if (weightInput) weightInput.value = '';
+      if (qtyInput) qtyInput.value = '';
+
+      renderCreateProductsTable();
+      if (nameInput) nameInput.focus();
+      showToast(`Added "${product_name}" (${quantity} pcs) to consignment.`);
+    }
+
+    function removeCreateProductItem(index) {
+      if (index >= 0 && index < createShipmentProducts.length) {
+        createShipmentProducts.splice(index, 1);
+        renderCreateProductsTable();
+        showToast('Item removed from consignment.');
+      }
+    }
+
+    function generateAndFillTrackingNumber() {
+      const prefix = 'NX';
+      const randomNum = Math.floor(100000 + Math.random() * 900000);
+      const code = `${prefix}-${randomNum}`;
+      const input = document.getElementById('newTrackingNumber');
+      if (input) {
+        input.value = code;
+        showToast(`Generated tracking code: ${code}`);
+      }
+    }
+
+    function initCreateShipmentPage() {
+      // Clear ALL inputs completely - ZERO default values
+      const form = document.getElementById('createShipmentForm');
+      if (form) form.reset();
+
+      const clearIds = [
+        'newTrackingNumber', 'newTransportMode', 'newPaymentMode', 'newStatus',
+        'newTotalFreight', 'newPickupDate', 'newPickupTime', 'newEta',
+        'createItemProduct', 'createItemPackageType', 'createItemDimensions', 'createItemWeight', 'createItemQuantity',
+        'newShipperName', 'newShipperPhone', 'newShipperEmail', 'newShipperAddress',
+        'newReceiverName', 'newReceiverPhone', 'newReceiverEmail', 'newReceiverAddress',
+        'newOrigin', 'newDestination', 'newCurrentLocation',
+        'newComment', 'newInitialCheckpoint'
+      ];
+
+      clearIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+
+      createShipmentProducts = [];
+      renderCreateProductsTable();
+    }
+
+    async function handleCreateShipment(e) {
+      e.preventDefault();
+
+      // Clear any previous error banner
+      const errBanner = document.getElementById('createShipmentErrorBanner');
+      if (errBanner) errBanner.classList.add('hidden');
+
+      // Auto-capture product if user typed into product inputs but didn't click "Add Product"
+      const nameInput = document.getElementById('createItemProduct');
+      const enteredProduct = nameInput ? nameInput.value.trim() : '';
+      if (enteredProduct) {
+        addProductItemToCreateList();
+      }
+
+      // If consignment cargo table is still empty, add a default standard cargo item so registration is never blocked
+      if (createShipmentProducts.length === 0) {
+        createShipmentProducts.push({
+          product_name: 'General Commercial Cargo',
+          package_type: 'Standard Parcel',
+          dimensions: '',
+          weight: '',
+          quantity: 1
+        });
+        renderCreateProductsTable();
+      }
+
+      const submitBtn = document.getElementById('createShipmentSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Registering Consignment...`;
+
+      const transportMode = document.getElementById('newTransportMode')?.value || 'Road Freight';
+      const paymentMode = document.getElementById('newPaymentMode')?.value || 'Prepaid';
+      const status = document.getElementById('newStatus')?.value || 'In Transit';
+
+      const payload = {
+        tracking_number: (document.getElementById('newTrackingNumber')?.value || '').trim(),
+        transport_mode: transportMode,
+        service_type: transportMode,
+        payment_mode: paymentMode,
+        total_freight: (document.getElementById('newTotalFreight')?.value || '').trim(),
+        pickup_date: document.getElementById('newPickupDate')?.value || null,
+        pickup_time: (document.getElementById('newPickupTime')?.value || '').trim(),
+        expected_delivery_date: document.getElementById('newEta')?.value || null,
+        estimated_delivery_date: document.getElementById('newEta')?.value || null,
+        shipper_name: (document.getElementById('newShipperName')?.value || '').trim(),
+        shipper_phone: (document.getElementById('newShipperPhone')?.value || '').trim(),
+        shipper_email: (document.getElementById('newShipperEmail')?.value || '').trim(),
+        shipper_address: (document.getElementById('newShipperAddress')?.value || '').trim(),
+        receiver_name: (document.getElementById('newReceiverName')?.value || '').trim(),
+        receiver_phone: (document.getElementById('newReceiverPhone')?.value || '').trim(),
+        receiver_email: (document.getElementById('newReceiverEmail')?.value || '').trim(),
+        receiver_address: (document.getElementById('newReceiverAddress')?.value || '').trim(),
+        origin: (document.getElementById('newOrigin')?.value || '').trim(),
+        destination: (document.getElementById('newDestination')?.value || '').trim(),
+        current_location: (document.getElementById('newCurrentLocation')?.value || '').trim(),
+        status: status,
+        comment: (document.getElementById('newComment')?.value || '').trim(),
+        notes: (document.getElementById('newComment')?.value || '').trim(),
+        initial_checkpoint_description: (document.getElementById('newInitialCheckpoint')?.value || '').trim(),
+        products: createShipmentProducts,
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments`, {
+          method: 'POST',
+          headers: getAuthHeaders(),
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        if (res.status === 401) {
+          showToast('Session expired. Please log in again.', true);
+          openModal('loginModal');
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.success && data.shipment) {
+          const trk = data.shipment.tracking_number;
+          showToast(`Consignment ${trk} registered successfully!`);
+
+          // 1. Reset all form inputs immediately
+          initCreateShipmentPage();
+
+          // 2. Switch tab to Shipments page
+          switchTab('shipments');
+
+          // 3. Show prominent success banner on Shipments page
+          const alertBanner = document.getElementById('shipmentCreatedAlertBanner');
+          if (alertBanner) {
+            const titleEl = document.getElementById('shipmentCreatedAlertTitle');
+            const descEl = document.getElementById('shipmentCreatedAlertDesc');
+            const codeEl = document.getElementById('shipmentCreatedAlertCode');
+            const trackBtn = document.getElementById('shipmentCreatedAlertTrackBtn');
+
+            if (titleEl) titleEl.textContent = `Consignment ${trk} Registered Successfully!`;
+            if (descEl) descEl.innerHTML = `Route: <strong>${data.shipment.origin || 'Origin'} &rarr; ${data.shipment.destination || 'Destination'}</strong> &bull; Status: <span class="font-semibold text-brand-700">${data.shipment.status || 'In Transit'}</span>`;
+            if (codeEl) codeEl.textContent = trk;
+            if (trackBtn) trackBtn.href = `/track-shipment?tracking=${encodeURIComponent(trk)}`;
+
+            alertBanner.classList.remove('hidden');
+            alertBanner.scrollIntoView({ behavior: 'smooth' });
+          }
+
+          // 4. Refresh Shipments table & Dashboard metrics
+          await loadShipments();
+          loadDashboardStats();
+
+          // 5. Populate and open Success Modal
+          const trkEl = document.getElementById('successModalTracking');
+          if (trkEl) trkEl.textContent = trk;
+
+          const routeEl = document.getElementById('successModalRoute');
+          if (routeEl) routeEl.textContent = `${data.shipment.origin || 'Origin'} → ${data.shipment.destination || 'Destination'}`;
+
+          const cargoEl = document.getElementById('successModalCargo');
+          if (cargoEl) {
+            const count = data.shipment.products ? data.shipment.products.length : 1;
+            cargoEl.textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+          }
+
+          const trackLink = document.getElementById('successModalTrackLink');
+          if (trackLink) trackLink.href = `/track-shipment?tracking=${encodeURIComponent(trk)}`;
+
+          const printLink = document.getElementById('successModalPrintLink');
+          if (printLink) printLink.href = `/track-shipment?tracking=${encodeURIComponent(trk)}#print`;
+
+          const cpBtn = document.getElementById('successModalCheckpointsBtn');
+          if (cpBtn) {
+            cpBtn.onclick = () => {
+              closeModal('consignmentSuccessModal');
+              openCheckpointsModal(data.shipment.id, trk);
+            };
+          }
+
+          const barcodeEl = document.getElementById('successModalBarcode');
+          if (barcodeEl) {
+            barcodeEl.innerHTML = generateBarcodeSVG(trk, { height: 38, barWidth: 1.5 });
+          }
+
+          openModal('consignmentSuccessModal');
+        } else {
+          const errMsg = data.message || 'Failed to create shipment. Please verify all required fields.';
+          showToast(errMsg, true);
+          const errBannerEl = document.getElementById('createShipmentErrorBanner');
+          const errTextEl = document.getElementById('createShipmentErrorText');
+          if (errBannerEl && errTextEl) {
+            errTextEl.textContent = errMsg;
+            errBannerEl.classList.remove('hidden');
+            errBannerEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      } catch (err) {
+        console.error('Create shipment error', err);
+        const errMsg = 'Server communication error: ' + (err.message || 'Failed to connect');
+        showToast(errMsg, true);
+        const errBannerEl = document.getElementById('createShipmentErrorBanner');
+        const errTextEl = document.getElementById('createShipmentErrorText');
+        if (errBannerEl && errTextEl) {
+          errTextEl.textContent = errMsg;
+          errBannerEl.classList.remove('hidden');
+          errBannerEl.scrollIntoView({ behavior: 'smooth' });
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>Register Consignment</span>`;
+      }
+    }
+
+    // ---------------- Edit Page Itemizer ----------------
+    function renderEditProductsTable() {
+      const tbody = document.getElementById('editProductsTableBody');
+      const emptyWarn = document.getElementById('editProductEmptyWarning');
+      const summaryRow = document.getElementById('editProductSummaryRow');
+      const distinctCountEl = document.getElementById('editTotalDistinctCount');
+      const unitsCountEl = document.getElementById('editTotalUnitsCount');
+
+      if (!tbody) return;
+
+      if (editShipmentProducts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-rose-500 italic">No products in consignment. At least 1 product is required.</td></tr>`;
+        if (emptyWarn) emptyWarn.classList.remove('hidden');
+        if (summaryRow) summaryRow.classList.add('hidden');
+        return;
+      }
+
+      if (emptyWarn) emptyWarn.classList.add('hidden');
+      if (summaryRow) summaryRow.classList.remove('hidden');
+
+      const totalUnits = editShipmentProducts.reduce((acc, p) => acc + (parseInt(p.quantity, 10) || 1), 0);
+      if (distinctCountEl) distinctCountEl.textContent = editShipmentProducts.length;
+      if (unitsCountEl) unitsCountEl.textContent = totalUnits;
+
+      tbody.innerHTML = editShipmentProducts.map((p, idx) => `
+        <tr class="hover:bg-slate-50/70 transition">
+          <td class="px-4 py-3 font-semibold text-slate-400">${idx + 1}</td>
+          <td class="px-4 py-3 font-bold text-slate-800">${escapeHtml(p.product_name || p.product || 'Standard Cargo')}</td>
+          <td class="px-4 py-3 text-slate-600"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs">${escapeHtml(p.package_type || 'Standard')}</span></td>
+          <td class="px-4 py-3 text-slate-500 font-mono">${escapeHtml(p.dimensions || '-')}</td>
+          <td class="px-4 py-3 text-slate-500">${escapeHtml(p.weight || '-')}</td>
+          <td class="px-4 py-3 text-right font-extrabold text-brand-700">${p.quantity || 1}</td>
+          <td class="px-4 py-3 text-center">
+            <button type="button" onclick="removeEditProductItem(${idx})" title="Remove product" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-rose-50 transition">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function addProductItemToEditList() {
+      const nameInput = document.getElementById('editItemProduct');
+      const typeInput = document.getElementById('editItemPackageType');
+      const dimInput = document.getElementById('editItemDimensions');
+      const weightInput = document.getElementById('editItemWeight');
+      const qtyInput = document.getElementById('editItemQuantity');
+
+      const product_name = (nameInput?.value || '').trim();
+      const package_type = (typeInput?.value || '').trim() || 'Standard Parcel';
+      const dimensions = (dimInput?.value || '').trim();
+      const weight = (weightInput?.value || '').trim();
+      const quantity = parseInt(qtyInput?.value, 10) || 1;
+
+      if (!product_name) {
+        showToast('Please enter a Product Description / Item Name.', true);
+        if (nameInput) nameInput.focus();
+        return;
+      }
+
+      editShipmentProducts.push({
+        product_name,
+        package_type,
+        dimensions,
+        weight,
+        quantity: Math.max(1, quantity)
+      });
+
+      if (nameInput) nameInput.value = '';
+      if (typeInput) typeInput.value = '';
+      if (dimInput) dimInput.value = '';
+      if (weightInput) weightInput.value = '';
+      if (qtyInput) qtyInput.value = '';
+
+      renderEditProductsTable();
+      if (nameInput) nameInput.focus();
+      showToast(`Added "${product_name}" to consignment.`);
+    }
+
+    function removeEditProductItem(index) {
+      if (editShipmentProducts.length <= 1) {
+        alert('At least 1 product item must remain in the consignment.');
+        return;
+      }
+      editShipmentProducts.splice(index, 1);
+      renderEditProductsTable();
+      showToast('Item removed from consignment.');
+    }
+
+    async function openEditShipmentPage(id) {
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments/${id}`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        if (res.status === 401) return openModal('loginModal');
+        const data = await res.json();
+        if (!data.success || !data.shipment) {
+          showToast('Consignment not found', true);
+          return;
+        }
+
+        const s = data.shipment;
+        document.getElementById('editShipmentId').value = s.id;
+        document.getElementById('editTrackingDisplay').textContent = s.tracking_number;
+        document.getElementById('editTrackingNumber').value = s.tracking_number;
+        document.getElementById('editTransportMode').value = s.transport_mode || s.service_type || 'Road Freight';
+        document.getElementById('editPaymentMode').value = s.payment_mode || 'Prepaid';
+        document.getElementById('editTotalFreight').value = s.total_freight || '';
+        document.getElementById('editStatus').value = s.status || 'In Transit';
+        document.getElementById('editPickupDate').value = s.pickup_date ? s.pickup_date.split('T')[0] : '';
+        document.getElementById('editPickupTime').value = s.pickup_time || '';
+        document.getElementById('editEta').value = s.estimated_delivery_date ? s.estimated_delivery_date.split('T')[0] : '';
+        document.getElementById('editShipperName').value = s.shipper_name || '';
+        document.getElementById('editShipperPhone').value = s.shipper_phone || '';
+        document.getElementById('editShipperEmail').value = s.shipper_email || '';
+        document.getElementById('editShipperAddress').value = s.shipper_address || '';
+        document.getElementById('editReceiverName').value = s.receiver_name || '';
+        document.getElementById('editReceiverPhone').value = s.receiver_phone || '';
+        document.getElementById('editReceiverEmail').value = s.receiver_email || '';
+        document.getElementById('editReceiverAddress').value = s.receiver_address || '';
+        document.getElementById('editOrigin').value = s.origin || '';
+        document.getElementById('editDestination').value = s.destination || '';
+        document.getElementById('editCurrentLocation').value = s.current_location || '';
+        document.getElementById('editComment').value = s.comment || s.notes || '';
+
+        // Status badge
+        const badgeEl = document.getElementById('editStatusBadgeDisplay');
+        if (badgeEl) badgeEl.innerHTML = renderStatusBadge(s.status);
+
+        // Barcode Preview
+        const previewEl = document.getElementById('editBarcodePreview');
+        if (previewEl) {
+          previewEl.innerHTML = generateBarcodeSVG(s.tracking_number, { height: 40, barWidth: 1.5 });
+        }
+
+        // Populate Products
+        if (s.products && Array.isArray(s.products) && s.products.length > 0) {
+          editShipmentProducts = JSON.parse(JSON.stringify(s.products));
+        } else if (s.packages && Array.isArray(s.packages) && s.packages.length > 0) {
+          editShipmentProducts = JSON.parse(JSON.stringify(s.packages));
+        } else {
+          editShipmentProducts = [{
+            product_name: s.product || 'Commercial Goods',
+            package_type: s.package_type || 'Standard Parcel',
+            dimensions: s.dimensions || '',
+            weight: s.weight || '',
+            quantity: s.quantity || 1
+          }];
+        }
+
+        renderEditProductsTable();
+        switchTab('edit-shipment');
+
+      } catch (err) {
+        console.error('Failed to load shipment details', err);
+        showToast('Failed to load consignment details', true);
+      }
+    }
+
+    async function handleEditShipment(e) {
+      e.preventDefault();
+
+      // Auto-capture product if user typed into edit product inputs but didn't click "Add Product"
+      const editNameInput = document.getElementById('editItemProduct');
+      const enteredEditProduct = editNameInput ? editNameInput.value.trim() : '';
+      if (enteredEditProduct) {
+        addProductItemToEditList();
+      }
+
+      if (editShipmentProducts.length === 0) {
+        showToast('At least 1 product item must remain in the consignment.', true);
+        return;
+      }
+
+      const id = document.getElementById('editShipmentId').value;
+      const submitBtn = document.getElementById('editShipmentSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Saving Changes...`;
+
+      const transportMode = document.getElementById('editTransportMode').value;
+      const payload = {
+        transport_mode: transportMode,
+        service_type: transportMode,
+        payment_mode: document.getElementById('editPaymentMode').value,
+        total_freight: document.getElementById('editTotalFreight').value.trim(),
+        status: document.getElementById('editStatus').value,
+        pickup_date: document.getElementById('editPickupDate').value || null,
+        pickup_time: document.getElementById('editPickupTime').value.trim(),
+        expected_delivery_date: document.getElementById('editEta').value || null,
+        estimated_delivery_date: document.getElementById('editEta').value || null,
+        shipper_name: document.getElementById('editShipperName').value.trim(),
+        shipper_phone: document.getElementById('editShipperPhone').value.trim(),
+        shipper_email: document.getElementById('editShipperEmail').value.trim(),
+        shipper_address: document.getElementById('editShipperAddress').value.trim(),
+        receiver_name: document.getElementById('editReceiverName').value.trim(),
+        receiver_phone: document.getElementById('editReceiverPhone').value.trim(),
+        receiver_email: document.getElementById('editReceiverEmail').value.trim(),
+        receiver_address: document.getElementById('editReceiverAddress').value.trim(),
+        origin: document.getElementById('editOrigin').value.trim(),
+        destination: document.getElementById('editDestination').value.trim(),
+        current_location: document.getElementById('editCurrentLocation').value.trim(),
+        comment: document.getElementById('editComment').value.trim(),
+        notes: document.getElementById('editComment').value.trim(),
+        products: editShipmentProducts,
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments/${id}`, {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        if (res.status === 401) {
+          showToast('Session expired. Please log in again.', true);
+          openModal('loginModal');
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.success) {
+          showToast(`Consignment ${data.shipment.tracking_number} updated successfully!`);
+          switchTab('shipments');
+          await loadShipments();
+        } else {
+          showToast(data.message || 'Failed to update consignment', true);
+        }
+      } catch (err) {
+        console.error('Update shipment error', err);
+        showToast('Server communication error', true);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-check"></i><span>Save Consignment Changes</span>`;
+      }
+    }
+
+    async function deleteShipment(id, trackingNo) {
+      if (!confirm(`Are you sure you want to permanently delete consignment ${trackingNo}?`)) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments/${id}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Consignment ${trackingNo} deleted.`);
+          loadShipments();
+        } else {
+          alert(data.message || 'Failed to delete consignment');
+        }
+      } catch (err) {
+        alert('Server communication error');
+      }
+    }
+
+    // ----------------------------------------------------
+    // CHECKPOINTS / MILESTONES MODAL
+    // ----------------------------------------------------
+    let activeShipmentId = null;
+
+    async function openCheckpointsModal(shipmentId, trackingNo) {
+      activeShipmentId = shipmentId;
+      document.getElementById('cpShipmentId').value = shipmentId;
+      document.getElementById('cpModalTrackingTitle').textContent = `Milestones & Tracking: ${trackingNo}`;
+      document.getElementById('addCheckpointForm').reset();
+      openModal('checkpointsModal');
+      await refreshCheckpointsList(shipmentId);
+    }
+
+    async function refreshCheckpointsList(shipmentId) {
+      const listEl = document.getElementById('checkpointsTimelineList');
+      listEl.innerHTML = `<p class="text-slate-400 text-xs py-4 text-center">Loading checkpoints...</p>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments/${shipmentId}`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        if (!data.success) return;
+
+        if (data.checkpoints.length === 0) {
+          listEl.innerHTML = `<p class="text-slate-400 text-xs py-4 text-center">No checkpoints logged yet.</p>`;
+          return;
+        }
+
+        listEl.innerHTML = data.checkpoints.map(cp => `
+          <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xs shrink-0 mt-0.5">
+                <i class="fa-solid fa-location-pin"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-800 text-sm">${cp.location}</span>
+                  ${renderStatusBadge(cp.status)}
+                </div>
+                <p class="text-xs text-slate-600 mt-1">${cp.description || 'Status update logged.'}</p>
+                <p class="text-[11px] text-slate-400 mt-1">${new Date(cp.checkpoint_time).toLocaleString()}</p>
+              </div>
+            </div>
+            <button onclick="deleteCheckpoint(${shipmentId}, ${cp.id})" title="Remove milestone" class="text-slate-400 hover:text-rose-600 p-1.5 rounded transition">
+              <i class="fa-regular fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        listEl.innerHTML = `<p class="text-rose-500 text-xs py-4 text-center">Failed to load checkpoints</p>`;
+      }
+    }
+
+    async function handleAddCheckpoint(e) {
+      e.preventDefault();
+      const shipmentId = document.getElementById('cpShipmentId').value;
+      const location = document.getElementById('cpLocation').value.trim();
+      const status = document.getElementById('cpStatus').value;
+      const description = document.getElementById('cpDescription').value.trim();
+      const notify_customer = document.getElementById('cpNotifyCustomer').checked;
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments/${shipmentId}/checkpoints`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ location, status, description, notify_customer })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Milestone added and tracking updated!');
+          document.getElementById('cpLocation').value = '';
+          document.getElementById('cpDescription').value = '';
+          refreshCheckpointsList(shipmentId);
+          if (currentTab === 'shipments') loadShipments();
+        } else {
+          alert(data.message || 'Failed to add checkpoint');
+        }
+      } catch (err) {
+        alert('Server communication error');
+      }
+    }
+
+    async function deleteCheckpoint(shipmentId, checkpointId) {
+      if (!confirm('Remove this milestone?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/admin/shipments/${shipmentId}/checkpoints/${checkpointId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Milestone removed.');
+          refreshCheckpointsList(shipmentId);
+          if (currentTab === 'shipments') loadShipments();
+        }
+      } catch (err) {
+        alert('Server error');
+      }
+    }
+
+    // ----------------------------------------------------
+    // CONTACT MESSAGES LIST & DETAILS
+    // ----------------------------------------------------
+    function filterMessages(status) {
+      currentMessageFilter = status;
+      document.querySelectorAll('.msg-filter-btn').forEach(btn => {
+        if (btn.dataset.status === status) {
+          btn.className = 'msg-filter-btn px-4 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white';
+        } else {
+          btn.className = 'msg-filter-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100';
+        }
+      });
+      loadMessages();
+    }
+
+    async function loadMessages() {
+      const container = document.getElementById('messagesContainer');
+      container.innerHTML = `<p class="text-center py-8 text-slate-400">Loading inquiries...</p>`;
+
+      try {
+        const res = await fetch(`${API_BASE}/admin/messages?status=${currentMessageFilter}`, {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        if (res.status === 401) return openModal('loginModal');
+
+        const data = await res.json();
+        if (!data.success) return;
+
+        if (data.messages.length === 0) {
+          container.innerHTML = `<div class="bg-white p-12 rounded-2xl border border-slate-200/80 text-center text-slate-400">No inquiries found in this view.</div>`;
+          return;
+        }
+
+        container.innerHTML = data.messages.map(m => `
+          <div class="bg-white p-6 rounded-2xl border ${m.status === 'unread' ? 'border-brand-300 shadow-sm bg-brand-50/20' : 'border-slate-200/80'} transition flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-start gap-4 flex-1">
+              <div class="w-11 h-11 rounded-full ${m.status === 'unread' ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-500'} flex items-center justify-center font-bold text-sm shrink-0">
+                ${m.first_name[0]}${m.last_name[0]}
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-3">
+                  <h4 class="font-bold text-slate-800 text-base">${m.first_name} ${m.last_name}</h4>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${m.status === 'unread' ? 'bg-rose-100 text-rose-700' : m.status === 'replied' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}">
+                    ${m.status.toUpperCase()}
+                  </span>
+                  <span class="text-xs text-slate-400 ml-auto hidden sm:inline">${new Date(m.created_at).toLocaleString()}</span>
+                </div>
+                <div class="text-xs text-brand-600 font-medium mt-0.5 flex items-center gap-3">
+                  <span><i class="fa-regular fa-envelope mr-1"></i>${m.email}</span>
+                  ${m.phone ? `<span><i class="fa-solid fa-phone mr-1 text-slate-400"></i>${m.phone}</span>` : ''}
+                </div>
+                <p class="text-sm text-slate-600 mt-2 line-clamp-2">${m.message}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 self-end md:self-center shrink-0">
+              <button onclick="viewMessageDetails(${JSON.stringify(m).replace(/"/g, '&quot;')})" class="px-4 py-2 bg-slate-100 hover:bg-brand-50 text-slate-700 hover:text-brand-600 rounded-xl text-xs font-semibold transition">
+                View & Reply
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+      } catch (err) {
+        console.error('Failed to load messages', err);
+      }
+    }
+
+    function viewMessageDetails(msg) {
+      document.getElementById('activeMessageId').value = msg.id;
+      document.getElementById('msgReceivedDate').textContent = `Received on ${new Date(msg.created_at).toLocaleString()}`;
+      document.getElementById('msgSenderName').textContent = `${msg.first_name} ${msg.last_name}`;
+      document.getElementById('msgPhone').textContent = msg.phone || 'None provided';
+      document.getElementById('msgEmail').textContent = msg.email;
+      document.getElementById('msgBody').textContent = msg.message;
+
+      const replyMailto = document.getElementById('msgReplyMailto');
+      replyMailto.href = `mailto:${msg.email}?subject=Re: Your inquiry to Nexivan Logistics&body=Hello ${msg.first_name},%0D%0A%0D%0AThank you for contacting Nexivan Logistics.%0D%0A%0D%0ARegarding your message:%0D%0A"${encodeURIComponent(msg.message)}"%0D%0A%0D%0A`;
+
+      openModal('messageModal');
+
+      // Auto-mark as read if unread
+      if (msg.status === 'unread') {
+        markActiveMessageStatus('read', false);
+      }
+    }
+
+    async function markActiveMessageStatus(status, close = true) {
+      const msgId = document.getElementById('activeMessageId').value;
+      try {
+        await fetch(`${API_BASE}/admin/messages/${msgId}/status`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ status })
+        });
+        if (close) closeModal('messageModal');
+        showToast(`Message marked as ${status}`);
+        loadMessages();
+        loadDashboardStats();
+      } catch (err) {}
+    }
+
+    async function deleteActiveMessage() {
+      const msgId = document.getElementById('activeMessageId').value;
+      if (!confirm('Are you sure you want to delete this inquiry?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/admin/messages/${msgId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeModal('messageModal');
+          showToast('Message deleted.');
+          loadMessages();
+          loadDashboardStats();
+        }
+      } catch (err) {
+        alert('Server error');
+      }
+    }
+
+    // ----------------------------------------------------
+    // COMPANY SETTINGS LOGIC
+    // ----------------------------------------------------
+    let activeSettings = null;
+
+    async function loadCompanySettings() {
+      try {
+        const res = await fetch(`${API_BASE}/admin/settings`, {
+          credentials: 'include',
+          headers: getAuthHeaders(),
+        });
+        const data = await res.json();
+        if (data.success && data.settings) {
+          activeSettings = data.settings;
+          populateSettingsForm(data.settings);
+        } else {
+          showToast('Failed to load settings', true);
+        }
+      } catch (err) {
+        console.error('[Settings Load Error]', err);
+        showToast('Error connecting to settings API', true);
+      }
+    }
+
+    function populateSettingsForm(s) {
+      const emailInput = document.getElementById('setCompanyEmail');
+      const phoneInput = document.getElementById('setCompanyPhone');
+      const whatsappInput = document.getElementById('setCompanyWhatsapp');
+
+      if (emailInput) emailInput.value = s.email || '';
+      if (phoneInput) phoneInput.value = s.phone || '';
+      if (whatsappInput) whatsappInput.value = s.whatsapp || '';
+
+      updateSettingsPreview();
+
+      const lastUpdatedEl = document.getElementById('settingsLastUpdated');
+      if (lastUpdatedEl && s.updated_at) {
+        try {
+          lastUpdatedEl.textContent = `Last saved: ${new Date(s.updated_at).toLocaleString()}`;
+        } catch (e) {
+          lastUpdatedEl.textContent = 'Last saved: Recently';
+        }
+      }
+    }
+
+    function updateSettingsPreview() {
+      const email = (document.getElementById('setCompanyEmail')?.value || '').trim() || 'info@nexivanlogistics.com';
+      const phone = (document.getElementById('setCompanyPhone')?.value || '').trim() || '+1 (915) 217-3598';
+      const whatsapp = (document.getElementById('setCompanyWhatsapp')?.value || '').trim() || '+1 (915) 217-3598';
+
+      const rawWhatsapp = whatsapp.replace(/\D/g, '') || phone.replace(/\D/g, '') || '19152173598';
+
+      // Update Preview Card
+      const prevEmail = document.getElementById('prevEmail');
+      const prevHeaderPhone = document.getElementById('prevHeaderPhone');
+      const prevWhatsapp = document.getElementById('prevWhatsapp');
+      const prevWhatsappLink = document.getElementById('prevWhatsappLink');
+      const rawBadge = document.getElementById('setWhatsappRawBadge');
+
+      if (prevEmail) prevEmail.textContent = email;
+      if (prevHeaderPhone) prevHeaderPhone.textContent = phone;
+      if (prevWhatsapp) prevWhatsapp.textContent = whatsapp;
+      if (rawBadge) rawBadge.textContent = `wa.me/${rawWhatsapp}`;
+      if (prevWhatsappLink) prevWhatsappLink.href = `https://wa.me/${rawWhatsapp}`;
+    }
+
+    async function handleSaveSettings(e) {
+      if (e) e.preventDefault();
+      const saveBtn = document.getElementById('saveSettingsBtn');
+      const origHtml = saveBtn ? saveBtn.innerHTML : '';
+
+      try {
+        if (saveBtn) {
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Saving Changes...</span>`;
+        }
+
+        const email = document.getElementById('setCompanyEmail').value.trim();
+        const phone = document.getElementById('setCompanyPhone').value.trim();
+        const whatsapp = document.getElementById('setCompanyWhatsapp').value.trim();
+
+        const payload = { email, phone, whatsapp };
+
+        const res = await fetch(`${API_BASE}/admin/settings`, {
+          method: 'PUT',
+          credentials: 'include',
+          headers: getAuthHeaders(),
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        if (data.success && data.settings) {
+          activeSettings = data.settings;
+          // Store in localStorage for instant frontend hydration
+          try {
+            localStorage.setItem('nexivan_company_settings', JSON.stringify(data.settings));
+          } catch (storageErr) {}
+
+          populateSettingsForm(data.settings);
+          showToast('Company settings saved successfully! Live across entire website.');
+        } else {
+          showToast(data.message || 'Failed to update settings', true);
+        }
+      } catch (err) {
+        console.error('[Save Settings Error]', err);
+        showToast('Network error while saving settings', true);
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = origHtml;
+        }
+      }
+    }
+
+    function resetSettingsDefaults() {
+      if (!confirm('Reset contact settings to original defaults?')) return;
+      document.getElementById('setCompanyEmail').value = 'info@nexivanlogistics.com';
+      document.getElementById('setCompanyPhone').value = '+1 (915) 217-3598';
+      document.getElementById('setCompanyWhatsapp').value = '+1 (915) 217-3598';
+      updateSettingsPreview();
+      showToast('Defaults loaded. Click "Save & Apply Globally" to persist changes.');
+    }
+
+    // Attach real-time preview listeners to settings inputs
+    ['setCompanyEmail', 'setCompanyPhone', 'setCompanyWhatsapp'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', updateSettingsPreview);
+      }
+    });
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>

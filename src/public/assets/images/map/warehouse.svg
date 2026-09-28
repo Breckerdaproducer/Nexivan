@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80" width="100" height="80">
+  <defs>
+    <filter id="hubShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.32"/>
+    </filter>
+
+    <linearGradient id="roofGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <linearGradient id="wallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+
+    <linearGradient id="bayDoorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#hubShadow)">
+    <!-- Ground Platform -->
+    <rect x="6" y="66" width="88" height="4" rx="1.5" fill="#475569"/>
+
+    <!-- Main Warehouse Structure -->
+    <rect x="12" y="24" width="76" height="42" fill="url(#wallGrad)" stroke="#94a3b8" stroke-width="1"/>
+
+    <!-- Warehouse Pitched Roof -->
+    <polygon points="10,24 50,10 90,24" fill="url(#roofGrad)" stroke="#0f172a" stroke-width="1.2"/>
+    <!-- Roof Overhang Trim in Warm Amber -->
+    <line x1="8" y1="24" x2="92" y2="24" stroke="#d97706" stroke-width="2"/>
+
+    <!-- Corrugation Panels on Wall -->
+    <line x1="20" y1="24" x2="20" y2="66" stroke="#e2e8f0" stroke-width="0.8"/>
+    <line x1="28" y1="24" x2="28" y2="66" stroke="#e2e8f0" stroke-width="0.8"/>
+    <line x1="36" y1="24" x2="36" y2="66" stroke="#e2e8f0" stroke-width="0.8"/>
+    <line x1="64" y1="24" x2="64" y2="66" stroke="#e2e8f0" stroke-width="0.8"/>
+    <line x1="72" y1="24" x2="72" y2="66" stroke="#e2e8f0" stroke-width="0.8"/>
+    <line x1="80" y1="24" x2="80" y2="66" stroke="#e2e8f0" stroke-width="0.8"/>
+
+    <!-- Loading Dock Bay 1 -->
+    <rect x="18" y="42" width="18" height="24" rx="1" fill="url(#bayDoorGrad)" stroke="#0f172a" stroke-width="0.8"/>
+    <!-- Rollup Door Segments -->
+    <line x1="18" y1="46" x2="36" y2="46" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="18" y1="50" x2="36" y2="50" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="18" y1="54" x2="36" y2="54" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="18" y1="58" x2="36" y2="58" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="18" y1="62" x2="36" y2="62" stroke="#64748b" stroke-width="0.8"/>
+    <!-- Yellow Dock Bumper -->
+    <rect x="17" y="64" width="20" height="2" fill="#f59e0b"/>
+
+    <!-- Loading Dock Bay 2 -->
+    <rect x="41" y="42" width="18" height="24" rx="1" fill="url(#bayDoorGrad)" stroke="#0f172a" stroke-width="0.8"/>
+    <line x1="41" y1="46" x2="59" y2="46" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="41" y1="50" x2="59" y2="50" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="41" y1="54" x2="59" y2="54" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="41" y1="58" x2="59" y2="58" stroke="#64748b" stroke-width="0.8"/>
+    <line x1="41" y1="62" x2="59" y2="62" stroke="#64748b" stroke-width="0.8"/>
+    <rect x="40" y="64" width="20" height="2" fill="#f59e0b"/>
+
+    <!-- Administration Office Windows -->
+    <rect x="66" y="32" width="18" height="14" rx="1" fill="#0f172a" stroke="#0284c7" stroke-width="0.8"/>
+    <line x1="75" y1="32" x2="75" y2="46" stroke="#38bdf8" stroke-width="0.7"/>
+    <line x1="66" y1="39" x2="84" y2="39" stroke="#38bdf8" stroke-width="0.7"/>
+
+    <!-- Entrance Door -->
+    <rect x="69" y="52" width="12" height="14" fill="#334155" stroke="#1e293b" stroke-width="0.7"/>
+    <circle cx="79" cy="59" r="0.8" fill="#fef08a"/>
+
+    <!-- Warehouse Facility Sign -->
+    <rect x="36" y="27" width="28" height="7" rx="1.5" fill="#0b1e36" stroke="#d97706" stroke-width="0.8"/>
+    <text x="50" y="32" font-family="system-ui, -apple-system, sans-serif" font-size="4.2" font-weight="900" fill="#f59e0b" text-anchor="middle" letter-spacing="0.5">DISPATCH HUB</text>
+  </g>
+</svg>

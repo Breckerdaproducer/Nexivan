@@ -1,0 +1,98 @@
+@font-face {
+  font-family: 'revicons';
+  src: url("../fonts/revicons_6057.eot");
+  src: url("../fonts/revicons_6057_1.eot") format('embedded-opentype'),
+	   url("../fonts/revicons_6057.woff") format('woff'),
+	   url("../fonts/revicons_6057.ttf") format('truetype'),
+	   url("../images/revicons_6057.svg") format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.testrevicon { display:inline-block}
+.testrevicon:before	{	font-family: inherit; content: '\e824';font-size:15px; color:#fff; display:block; line-height: 40px; text-align: center;}
+.testloadedicon .testrevicon:before	{	font-family: 'revicons'; content: '\e824';font-size:15px; color:#fff; display:block; line-height: 40px; text-align: center;}
+
+ [class^="revicon-"]:before, [class*=" revicon-"]:before {
+  font-family: "revicons";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+  speak-as: spell-out;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+sr7-module [class^="revicon-"], sr7-module [class*=" revicon-"], 
+.rb-modal-wrapper [class^="revicon-"], .rb-modal-wrapper [class*=" revicon-"]{
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; 
+}
+
+.revicon-search-1:before { content: '\e802'; } /* 'î ' */
+.revicon-pencil-1:before { content: '\e831'; } /* 'î ±' */
+.revicon-picture-1:before { content: '\e803'; } /* 'î ' */
+.revicon-cancel:before { content: '\e80a'; } /* 'î ' */
+.revicon-info-circled:before { content: '\e80f'; } /* 'î ' */
+.revicon-trash:before { content: '\e801'; } /* 'î ' */
+.revicon-left-dir:before { content: '\e817'; } /* 'î ' */
+.revicon-right-dir:before { content: '\e818'; } /* 'î ' */
+.revicon-down-open:before { content: '\e83b'; } /* 'î »' */
+.revicon-left-open:before { content: '\e819'; } /* 'î ' */
+.revicon-right-open:before { content: '\e81a'; } /* 'î ' */
+.revicon-angle-left:before { content: '\e820'; } /* 'î  ' */
+.revicon-angle-right:before { content: '\e81d'; } /* 'î ' */
+.revicon-left-big:before { content: '\e81f'; } /* 'î ' */
+.revicon-right-big:before { content: '\e81e'; } /* 'î ' */
+.revicon-magic:before { content: '\e807'; } /* 'î ' */
+.revicon-picture:before { content: '\e800'; } /* 'î ' */
+.revicon-export:before { content: '\e80b'; } /* 'î ' */
+.revicon-cog:before { content: '\e832'; } /* 'î ²' */
+.revicon-login:before { content: '\e833'; } /* 'î ³' */
+.revicon-logout:before { content: '\e834'; } /* 'î ´' */
+.revicon-video:before { content: '\e805'; } /* 'î ' */
+.revicon-arrow-combo:before { content: '\e827'; } /* 'î §' */
+.revicon-left-open-1:before { content: '\e82a'; } /* 'î ª' */
+.revicon-right-open-1:before { content: '\e82b'; } /* 'î «' */
+.revicon-left-open-mini:before { content: '\e822'; } /* 'î ¢' */
+.revicon-right-open-mini:before { content: '\e823'; } /* 'î £' */
+.revicon-left-open-big:before { content: '\e824'; } /* 'î ¤' */
+.revicon-right-open-big:before { content: '\e825'; } /* 'î ¥' */
+.revicon-left:before { content: '\e836'; } /* 'î ¶' */
+.revicon-right:before { content: '\e826'; } /* 'î ¦' */
+.revicon-ccw:before { content: '\e808'; } /* 'î ' */
+.revicon-arrows-ccw:before { content: '\e806'; } /* 'î ' */
+.revicon-palette:before { content: '\e829'; } /* 'î ©' */
+.revicon-list-add:before { content: '\e80c'; } /* 'î ' */
+.revicon-doc:before { content: '\e809'; } /* 'î ' */
+.revicon-left-open-outline:before { content: '\e82e'; } /* 'î ®' */
+.revicon-left-open-2:before { content: '\e82c'; } /* 'î ¬' */
+.revicon-right-open-outline:before { content: '\e82f'; } /* 'î ¯' */
+.revicon-right-open-2:before { content: '\e82d'; } /* 'î ­' */
+.revicon-equalizer:before { content: '\e83a'; } /* 'î º' */
+.revicon-layers-alt:before { content: '\e804'; } /* 'î ' */
+.revicon-popup:before { content: '\e828'; } /* 'î ¨' */
