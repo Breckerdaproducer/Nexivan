@@ -1624,9 +1624,14 @@
     );
 
     searchForms.forEach((form) => {
-      // Ensure form action points locally, never to an external domain
+      // Skip the dedicated tracking form on track-shipment page
+      if (form.id === 'nexivan-track-form' || form.getAttribute('name') === 'wpcargo-track-form' || form.closest('.wpcargo-track')) {
+        return;
+      }
+
+      // Ensure form action points locally to services, never tracking or external domain
       try {
-        form.setAttribute('action', '/track-shipment');
+        form.setAttribute('action', '/services');
       } catch (e) {}
 
       const input = form.querySelector('input.pxl-search-field, input.search-field, input[name="s"], input[type="text"]');
@@ -1668,10 +1673,10 @@
           if (!data.success || data.total === 0) {
             dropdown.innerHTML = `
               <div class="nex-search-no-results">
-                <i class="fal fa-search pxl-mr-8"></i> No direct results found for "<strong>${escapeHtml(q)}</strong>".<br/>
-                <a href="/track-shipment?tracking=${encodeURIComponent(q)}" style="display:inline-block; margin-top:10px; color:#0284c7; font-weight:600;">
-                  Track "${escapeHtml(q)}" as Shipment &rarr;
-                </a>
+                <i class="fal fa-search pxl-mr-8"></i> No results found for "<strong>${escapeHtml(q)}</strong>".<br/>
+                <span style="display:inline-block; margin-top:8px; font-size:13px; color:#64748b;">
+                  Try searching for <em>air freight</em>, <em>truck shipping</em>, <em>sea cargo</em>, or <em>contact</em>.
+                </span>
               </div>
             `;
             dropdown.style.display = 'block';
@@ -1681,24 +1686,7 @@
 
           let itemsHtml = '';
 
-          // 1. Shipments / Consignments
-          if (data.shipments && data.shipments.length > 0) {
-            itemsHtml += `<div class="nex-search-cat-title"><i class="fas fa-barcode pxl-mr-4"></i> Consignment Tracking</div>`;
-            data.shipments.forEach((s) => {
-              itemsHtml += `
-                <a href="${s.url}" class="nex-search-item" data-search-url="${s.url}">
-                  <div class="nex-si-icon"><i class="fas fa-box-check"></i></div>
-                  <div class="nex-si-info">
-                    <div class="nex-si-title">${escapeHtml(s.title)}</div>
-                    <div class="nex-si-desc">${escapeHtml(s.excerpt)}</div>
-                  </div>
-                  <span class="nex-si-badge badge-track">Track</span>
-                </a>
-              `;
-            });
-          }
-
-          // 2. Freight Services
+          // 1. Freight Services
           if (data.services && data.services.length > 0) {
             itemsHtml += `<div class="nex-search-cat-title"><i class="fas fa-truck-moving pxl-mr-4"></i> Freight Services</div>`;
             data.services.forEach((srv) => {
@@ -1715,7 +1703,7 @@
             });
           }
 
-          // 3. Other Pages & Insights
+          // 2. Core Pages & Insights
           if (data.pages && data.pages.length > 0) {
             itemsHtml += `<div class="nex-search-cat-title"><i class="fas fa-file-alt pxl-mr-4"></i> Pages &amp; Insights</div>`;
             data.pages.forEach((pg) => {
@@ -1746,9 +1734,7 @@
         } catch (err) {
           dropdown.innerHTML = `
             <div class="nex-search-no-results">
-              <a href="/track-shipment?tracking=${encodeURIComponent(q)}" style="color:#0284c7; font-weight:600;">
-                Track "${escapeHtml(q)}" on Shipment Portal &rarr;
-              </a>
+              <i class="fal fa-search pxl-mr-8"></i> No results found for "<strong>${escapeHtml(q)}</strong>".
             </div>
           `;
           dropdown.style.display = 'block';
@@ -1840,14 +1826,7 @@
           }
         }
 
-        // 2. Tracking number check (TRK-, NX-, or contains numbers/dashes and >= 4 chars)
-        const isTrackingFormat = /^(trk|nx|eq)?[a-z0-9\-_]{4,}$/i.test(q) && /\d/.test(q);
-        if (isTrackingFormat) {
-          window.location.href = `/track-shipment?tracking=${encodeURIComponent(q)}`;
-          return false;
-        }
-
-        // 3. Quick keyword match to common services and pages
+        // 2. Explicit keyword match to common services and pages
         const lower = q.toLowerCase();
         if (lower === 'truck' || lower.includes('truck freight') || lower.includes('road')) {
           window.location.href = '/service/truck-freight';
@@ -1889,12 +1868,12 @@
           window.location.href = '/services';
           return false;
         }
-        if (lower.includes('track') || lower.includes('trace') || lower.includes('consignment')) {
+        if (lower === 'track' || lower === 'tracking' || lower === 'trace' || lower.includes('track shipment')) {
           window.location.href = '/track-shipment';
           return false;
         }
 
-        // 4. If there is at least one result in the dropdown, navigate to the first one
+        // 3. If there is at least one result in the dropdown, navigate to the first one
         if (items.length > 0) {
           const firstHref = items[0].getAttribute('href');
           if (firstHref) {
@@ -1903,7 +1882,7 @@
           }
         }
 
-        // 5. Quick API check to navigate to first match
+        // 4. Quick API check to navigate to first match
         try {
           const res = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.searchEndpoint}?q=${encodeURIComponent(q)}`);
           const data = await res.json();
@@ -1913,8 +1892,8 @@
           }
         } catch (err) {}
 
-        // Fallback: Navigate to tracking portal with query
-        window.location.href = `/track-shipment?tracking=${encodeURIComponent(q)}`;
+        // Fallback: Navigate to services overview
+        window.location.href = '/services';
         return false;
       }
 
@@ -1936,6 +1915,7 @@
     // 5. Global Document-Level Fallback Interceptors
     // Guarantees no search form anywhere on the page can ever submit natively to an external site
     document.addEventListener('submit', function (e) {
+      if (e.target.closest('#nexivan-track-form, .wpcargo-track, [name="wpcargo-track-form"]')) return;
       const searchForm = e.target.closest('form.pxl-search-form, form.search-form, form[role="search"], .pxl-header-mobile-search form');
       if (searchForm) {
         e.preventDefault();
@@ -1943,7 +1923,7 @@
         const input = searchForm.querySelector('input.pxl-search-field, input.search-field, input[name="s"], input[type="text"]');
         const queryVal = input ? input.value.trim() : '';
         if (queryVal) {
-          window.location.href = `/track-shipment?tracking=${encodeURIComponent(queryVal)}`;
+          window.location.href = '/services';
         }
         return false;
       }

@@ -1,5 +1,3 @@
-const { query } = require('../config/db');
-
 // Built-in searchable site content (services, articles, core pages)
 const SITE_INDEX = [
   // Services
@@ -139,30 +137,7 @@ async function searchSite(req, res) {
       });
     }
 
-    // 1. Search Database for matching Shipments / Consignments
-    const shipRes = await query(
-      `SELECT tracking_number, origin, destination, current_location, status, service_type
-       FROM shipments
-       WHERE UPPER(tracking_number) ILIKE $1 
-          OR shipper_name ILIKE $1 
-          OR receiver_name ILIKE $1 
-          OR origin ILIKE $1 
-          OR destination ILIKE $1
-       LIMIT 5`,
-      [`%${q}%`]
-    );
-
-    const shipmentResults = shipRes.rows.map((ship) => ({
-      title: `Consignment #${ship.tracking_number} (${ship.status})`,
-      category: 'Shipment',
-      url: `/track-shipment?tracking=${encodeURIComponent(ship.tracking_number)}`,
-      icon: 'fa-box-check',
-      excerpt: `${ship.service_type || 'Freight'} from ${ship.origin} to ${ship.destination} • Current: ${ship.current_location || ship.origin}`,
-      trackingNumber: ship.tracking_number,
-      status: ship.status,
-    }));
-
-    // 2. Search Static Site Pages & Services
+    // Search Static Site Pages & Services only (No confidential tracking/shipment lookup)
     const siteMatches = SITE_INDEX.filter((item) => {
       const matchTitle = item.title.toLowerCase().includes(q);
       const matchExcerpt = item.excerpt.toLowerCase().includes(q);
@@ -170,17 +145,11 @@ async function searchSite(req, res) {
       return matchTitle || matchExcerpt || matchKeywords;
     });
 
-    const combinedResults = [...shipmentResults, ...siteMatches];
-
     return res.json({
       success: true,
       query: rawQ,
-      total: combinedResults.length,
-      hasExactTrackingMatch: shipmentResults.some(
-        (s) => s.trackingNumber.toLowerCase() === q.toLowerCase()
-      ),
-      results: combinedResults,
-      shipments: shipmentResults,
+      total: siteMatches.length,
+      results: siteMatches,
       services: siteMatches.filter((item) => item.category === 'Service'),
       pages: siteMatches.filter((item) => item.category !== 'Service'),
     });
