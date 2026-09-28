@@ -1434,3 +1434,91 @@ h1, h2, h3, h4, h5, h6,
   }
 }
 
+/* ==========================================================================
+   Header Navbar Logo Containment & Close Button Fixes (PC & Mobile)
+   ========================================================================== */
+
+/* 1. Prevent Sticky / Desktop Header Logo from blowing out on PC */
+.pxl-header-elementor-sticky .pxl-logo img,
+.elementor-element-d2bb6c7 .pxl-logo img,
+.pxl-header-elementor-main .pxl-logo img,
+.pxl-header-main .pxl-logo img {
+  max-height: 46px !important;
+  max-width: 230px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.elementor-element-d2bb6c7 {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  width: auto !important;
+}
+
+/* 2. Reliable Navbar Close Button (Visible and clickable on PC & Mobile) */
+.pxl-header-menu .pxl-menu-close,
+.pxl-menu-close.pxl-close {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(2, 132, 199, 0.1) !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  z-index: 999999 !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: all 0.25s ease !important;
+}
+
+.pxl-header-menu .pxl-menu-close:hover,
+.pxl-menu-close.pxl-close:hover {
+  background-color: #0284c7 !important;
+  transform: rotate(90deg);
+}
+
+.pxl-header-menu .pxl-menu-close::before,
+.pxl-header-menu .pxl-menu-close::after,
+.pxl-menu-close.pxl-close::before,
+.pxl-menu-close.pxl-close::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 18px !important;
+  height: 2.5px !important;
+  background-color: #0b1e36 !important;
+  border-radius: 2px !important;
+  transition: background-color 0.25s ease !important;
+}
+
+.pxl-header-menu .pxl-menu-close:hover::before,
+.pxl-header-menu .pxl-menu-close:hover::after,
+.pxl-menu-close.pxl-close:hover::before,
+.pxl-menu-close.pxl-close:hover::after {
+  background-color: #ffffff !important;
+}
+
+.pxl-header-menu .pxl-menu-close::before,
+.pxl-menu-close.pxl-close::before {
+  transform: rotate(45deg) !important;
+}
+
+.pxl-header-menu .pxl-menu-close::after,
+.pxl-menu-close.pxl-close::after {
+  transform: rotate(-45deg) !important;
+}
+
+/* Ensure drawer close button is never hidden by media queries */
+@media (min-width: 1200px) {
+  .pxl-header-menu .pxl-menu-close.pxl-close {
+    display: flex !important;
+    visibility: visible !important;
+  }
+}
+

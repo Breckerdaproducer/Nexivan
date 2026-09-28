@@ -235,7 +235,7 @@ padding: 9px 20px; }
 <div class="elementor-element elementor-element-91479b8 e-con-full e-flex pxl-section-overflow-visible pxl-column-none pxl-section-fix-none pxl-bg-color-none e-con e-parent" data-e-type="container" data-element_type="container" data-id="91479b8" data-settings='{"background_background":"classic"}'><div class="elementor-element elementor-element-7ac7953 e-con-full e-flex pxl-section-overflow-visible pxl-column-none pxl-section-fix-none pxl-bg-color-none e-con e-child" data-e-type="container" data-element_type="container" data-id="7ac7953"> <div class="elementor-element elementor-element-0cdb4c9 elementor-widget__width-auto elementor-widget elementor-widget-pxl_logo" data-e-type="widget" data-element_type="widget" data-id="0cdb4c9" data-widget_type="pxl_logo.default">
 <div class="elementor-widget-container">
 <div class="pxl-logo" data-wow-delay="ms">
-<a href="/"> <img alt="Nexivan Logistics" class="attachment-full" fetchpriority="high" height="50" src="assets/images/Nexivan-logo.svg" style="max-height: 48px; width: auto;" width="230"/> </a> </div>
+<a href="/"> <img alt="Nexivan Logistics" class="attachment-full" fetchpriority="high" height="50" src="assets/images/nexivan-logo.svg" style="max-height: 48px; width: auto;" width="230"/> </a> </div>
 </div>
 </div>
 <div class="elementor-element elementor-element-d27d6b6 elementor-widget__width-auto elementor-widget elementor-widget-pxl_menu" data-e-type="widget" data-element_type="widget" data-id="d27d6b6" data-widget_type="pxl_menu.default">
@@ -285,7 +285,7 @@ padding: 9px 20px; }
 <div class="elementor-element elementor-element-8ccd8d8 e-con-full e-flex pxl-section-overflow-visible pxl-column-none pxl-section-fix-none pxl-bg-color-none e-con e-parent" data-e-type="container" data-element_type="container" data-id="8ccd8d8" data-settings='{"background_background":"classic"}'><div class="elementor-element elementor-element-4428b6f e-con-full e-flex pxl-section-overflow-visible pxl-column-none pxl-section-fix-none pxl-bg-color-none e-con e-child" data-e-type="container" data-element_type="container" data-id="4428b6f"> <div class="elementor-element elementor-element-d2bb6c7 elementor-widget__width-auto elementor-widget elementor-widget-pxl_logo" data-e-type="widget" data-element_type="widget" data-id="d2bb6c7" data-widget_type="pxl_logo.default">
 <div class="elementor-widget-container">
 <div class="pxl-logo" data-wow-delay="ms">
-<a href="/"> <img alt="" class="attachment-full" fetchpriority="high" height="373" src="assets/images/Nexivan-logo.svg" width="1303"/> </a> </div>
+<a href="/"> <img alt="Nexivan Logistics" class="attachment-full" fetchpriority="high" height="50" src="assets/images/nexivan-logo.svg" style="max-height: 48px; width: auto;" width="230"/> </a> </div>
 </div>
 </div>
 <div class="elementor-element elementor-element-df2f5e6 elementor-widget__width-auto elementor-widget elementor-widget-pxl_menu" data-e-type="widget" data-element_type="widget" data-id="df2f5e6" data-widget_type="pxl_menu.default">
@@ -344,7 +344,7 @@ padding: 9px 20px; }
 </div>
 <div class="pxl-header-menu">
 <div class="pxl-header-menu-scroll">
-<div class="pxl-menu-close pxl-hide-xl pxl-close"></div>
+<div class="pxl-menu-close pxl-close" aria-label="Close Navigation Menu"></div>
 <div class="pxl-logo-mobile pxl-hide-xl">
 <a class="pxl-logo--dark" href="/" rel="home" title="Nexivan Logistics"><img alt="Nexivan Logistics" src="assets/images/nexivan-logo.svg"/></a> <a class="pxl-logo--light" href="/" rel="home" title="Nexivan Logistics"><img alt="Nexivan Logistics" src="assets/images/nexivan-logo.svg"/></a> </div>
 <div class="pxl-header-mobile-search pxl-hide-xl">
@@ -1362,7 +1362,7 @@ padding: 9px 20px; }
 <div class="elementor-element elementor-element-a9e40e3 e-con-full e-flex pxl-section-overflow-visible pxl-column-none pxl-section-fix-none pxl-bg-color-none e-con e-child" data-e-type="container" data-element_type="container" data-id="a9e40e3"> <div class="elementor-element elementor-element-83126ac elementor-widget elementor-widget-pxl_logo" data-e-type="widget" data-element_type="widget" data-id="83126ac" data-widget_type="pxl_logo.default">
 <div class="elementor-widget-container">
 <div class="pxl-logo" data-wow-delay="ms">
-<a href="/"> <img alt="Nexivan Logistics" class="attachment-full" height="50" src="assets/images/Nexivan-logo-white.svg" style="max-height: 48px; width: auto;" width="230"/> </a> </div>
+<a href="/"> <img alt="Nexivan Logistics" class="attachment-full" height="50" src="assets/images/nexivan-logo-white.svg" style="max-height: 48px; width: auto;" width="230"/> </a> </div>
 </div>
 </div>
 <div class="elementor-element elementor-element-b606a7a elementor-widget elementor-widget-pxl_text_editor" data-e-type="widget" data-element_type="widget" data-id="b606a7a" data-widget_type="pxl_text_editor.default">
@@ -1668,6 +1668,32 @@ var e="script#wp-emoji-settings",t=document.querySelector(e);if(!(t instanceof H
 	SR7.E.v6v7ids = JSON.parse('{\"n\":{\"1\":1,\"2\":2,\"15\":20},\"s\":{\"1\":15}}');
 </script>
 <script src="/assets/js/nexivan-api.js"></script>
+<script>
+// Resilient Navigation Close Handler
+(function() {
+  function closeNavDrawer() {
+    var menus = document.querySelectorAll('.pxl-header-menu, #pxl-nav-mobile, .pxl-header-menu-scroll');
+    menus.forEach(function(el) {
+      el.classList.remove('active');
+    });
+    document.body.classList.remove('body-overflow');
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.pxl-menu-close, .pxl-close, .pxl-header-menu-backdrop')) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeNavDrawer();
+    }
+  }, true);
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' || e.keyCode === 27) {
+      closeNavDrawer();
+    }
+  });
+})();
+</script>
 </body>
 </html>
 <!-- Page cached by LiteSpeed Cache 7.9.1 on 2026-09-13 07:25:48 -->

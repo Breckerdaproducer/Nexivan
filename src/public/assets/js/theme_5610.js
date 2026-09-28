@@ -112,9 +112,9 @@
         });
         
         $(".pxl-menu-close, .pxl-header-menu-backdrop, #pxl-header-mobile .pxl-menu-primary a.is-one-page").on('click', function () {
-            $(this).parents('.pxl-header-main').find('.pxl-header-menu').removeClass('active');
+            $('.pxl-header-menu').removeClass('active');
             $('#pxl-nav-mobile').removeClass('active');
-            $('body').toggleClass('body-overflow');
+            $('body').removeClass('body-overflow');
         });
         /* End Menu Mobile */
 

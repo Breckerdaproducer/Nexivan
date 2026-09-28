@@ -149,6 +149,10 @@ async function renderHtmlWithDynamicSettings(html) {
   out = out.replace(/https?:\/\/(?:www\.)?equitransworldlogistics\.com\/?/gi, '/');
   out = out.replace(/Equitransworldlogistics\.com/gi, 'Nexivan Logistics');
 
+  // 4b. Ensure logo paths are strictly lowercase for case-sensitive Linux hosts
+  out = out.replace(/assets\/images\/Nexivan-logo\.svg/g, 'assets/images/nexivan-logo.svg');
+  out = out.replace(/assets\/images\/Nexivan-logo-white\.svg/g, 'assets/images/nexivan-logo-white.svg');
+
   // 5. Inject global settings script in <head>
   const settingsScript = `<script id="nexivan-injected-settings">window.__NEXIVAN_SETTINGS__ = ${JSON.stringify(s)}; try { localStorage.setItem('nexivan_company_settings', JSON.stringify(${JSON.stringify(s)})); } catch(e){}</script>`;
   if (out.includes('</head>')) {
@@ -380,6 +384,18 @@ blogSlugs.forEach((slug) => {
   app.get([`/${slug}`, `/${slug}.html`], (req, res) => {
     sendRenderedHtml(res, path.join(publicDir, `${slug}.html`));
   });
+});
+
+// Case-insensitive asset aliases for logo files (prevents 404s on Linux production servers)
+app.get([
+  '/assets/images/Nexivan-logo.svg',
+  '/assets/images/Nexivan-logo-white.svg',
+  '/assets/images/nexivan-logo.svg',
+  '/assets/images/nexivan-logo-white.svg'
+], (req, res) => {
+  const isWhite = req.path.toLowerCase().includes('white');
+  const fileName = isWhite ? 'nexivan-logo-white.svg' : 'nexivan-logo.svg';
+  res.sendFile(path.join(publicDir, 'assets/images', fileName));
 });
 
 // Serve all static assets (css, js, images, fonts, icons)
