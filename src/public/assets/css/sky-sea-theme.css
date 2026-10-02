@@ -1229,41 +1229,85 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* ==========================================================================
-   Slider Revolution Hero (Original Design & Slide-Up Animations Restored)
+   Slider Revolution Hero (iOS WebKit & Cross-Browser Fixes)
    ========================================================================== */
+
+/* 0. Custom Elements Display Baseline for WebKit */
+sr7-module,
+sr7-adjuster,
+sr7-content,
+sr7-slide,
+sr7-bg,
+sr7-txt {
+  display: block;
+  box-sizing: border-box;
+}
+
+/* 1. Elementor Wrappers & RevSlider Outer Container */
+.elementor-element.elementor-element-a9eb4b8,
+.elementor-element.elementor-element-019c7b7,
+.elementor-element.elementor-element-cdf2026,
+.wp-block-themepunch-revslider {
+  width: 100% !important;
+  min-height: 840px !important;
+  height: 840px !important;
+  display: block !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
 #SR7_1_1 {
   position: relative !important;
   width: 100% !important;
+  height: 840px !important;
   min-height: 840px !important;
   display: block !important;
   overflow: hidden !important;
-  background-color: transparent !important;
+  contain: none !important;
+  -webkit-contain: none !important;
+  background-color: #0b1e36 !important;
+  background-image: url('../images/Mask-group.webp') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
 }
 
 #SR7_1_1 sr7-adjuster {
   position: relative !important;
   display: block !important;
   width: 100% !important;
+  height: 840px !important;
   min-height: 840px !important;
+  contain: none !important;
+  -webkit-contain: none !important;
 }
 
 #SR7_1_1 sr7-content {
   position: absolute !important;
   top: 0 !important;
+  bottom: 0 !important;
   left: 0 !important;
+  right: 0 !important;
   width: 100% !important;
   height: 100% !important;
+  min-height: 100% !important;
   display: block !important;
   z-index: 1 !important;
   overflow: hidden !important;
+  contain: none !important;
+  -webkit-contain: none !important;
 }
 
+#SR7_1_1 sr7-slide,
 #SR7_1_1 sr7-slide#SR7_1_1-1 {
   position: absolute !important;
   top: 0 !important;
+  bottom: 0 !important;
   left: 0 !important;
+  right: 0 !important;
   width: 100% !important;
   height: 100% !important;
+  min-height: 100% !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
@@ -1274,47 +1318,90 @@ h1, h2, h3, h4, h5, h6,
   visibility: visible !important;
   pointer-events: auto !important;
   z-index: 2 !important;
+  contain: none !important;
+  -webkit-contain: none !important;
+  background-color: #0b1e36 !important;
+  background-image: url('../images/Mask-group.webp') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
 }
 
 #SR7_1_1 sr7-slide#SR7_1_1-15 {
   display: none !important;
+  visibility: hidden !important;
 }
 
-/* Background image - Natural & Clean without artificial shade layer */
+/* Background image & layer */
 #SR7_1_1 sr7-bg,
-#SR7_1_1 #SR7_1_1-1-6 {
+#SR7_1_1 #SR7_1_1-1-6,
+#SR7_1_1 .sr7-layer[data-subtype="slidebg"] {
   position: absolute !important;
   top: 0 !important;
+  bottom: 0 !important;
   left: 0 !important;
+  right: 0 !important;
   width: 100% !important;
   height: 100% !important;
   display: block !important;
   visibility: visible !important;
+  opacity: 1 !important;
   z-index: 1 !important;
   overflow: hidden !important;
   pointer-events: none !important;
+  contain: none !important;
+  -webkit-contain: none !important;
+  background-color: #0b1e36 !important;
+  background-image: url('../images/Mask-group.webp') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
 }
 
-#SR7_1_1 sr7-bg img {
+#SR7_1_1 sr7-bg img,
+#SR7_1_1 .sr7-bg-img,
+#SR7_1_1 #SR7_1_1-1-6 img {
   position: absolute !important;
   top: 0 !important;
+  bottom: 0 !important;
   left: 0 !important;
+  right: 0 !important;
   width: 100% !important;
   height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
   object-fit: cover !important;
   object-position: center center !important;
   display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   filter: none !important;
+  z-index: 1 !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
 }
 
 #SR7_1_1 sr7-bg::after {
   display: none !important;
 }
 
+/* Layer Base Reset - ensure .sr7-layer is never hidden on iOS */
+#SR7_1_1 sr7-txt,
+#SR7_1_1 .sr7-layer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+}
+
 /* Layer 2: Main Headline */
 #SR7_1_1 #SR7_1_1-1-2 {
   display: block !important;
   visibility: visible !important;
+  opacity: 1 !important;
   position: relative !important;
   z-index: 10 !important;
   font-family: 'Arial', Helvetica, sans-serif !important;
@@ -1327,6 +1414,9 @@ h1, h2, h3, h4, h5, h6,
   max-width: 860px !important;
   margin: 0 0 22px 0 !important;
   padding: 0 !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  -webkit-animation: sr7MaskSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   animation: sr7MaskSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
@@ -1334,6 +1424,7 @@ h1, h2, h3, h4, h5, h6,
 #SR7_1_1 #SR7_1_1-1-3 {
   display: block !important;
   visibility: visible !important;
+  opacity: 1 !important;
   position: relative !important;
   z-index: 10 !important;
   font-family: 'Arial', Helvetica, sans-serif !important;
@@ -1345,6 +1436,9 @@ h1, h2, h3, h4, h5, h6,
   max-width: 620px !important;
   margin: 0 0 24px 0 !important;
   padding: 0 !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  -webkit-animation: sr7MaskSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both !important;
   animation: sr7MaskSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both !important;
 }
 
@@ -1352,6 +1446,7 @@ h1, h2, h3, h4, h5, h6,
 #SR7_1_1 #SR7_1_1-1-4 {
   display: block !important;
   visibility: visible !important;
+  opacity: 1 !important;
   position: relative !important;
   z-index: 10 !important;
   width: 620px !important;
@@ -1360,14 +1455,19 @@ h1, h2, h3, h4, h5, h6,
   background-color: rgba(255, 255, 255, 0.45) !important;
   margin: 0 0 32px 0 !important;
   padding: 0 !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  -webkit-animation: sr7FadeIn 1s ease 0.35s both !important;
   animation: sr7FadeIn 1s ease 0.35s both !important;
 }
 
 /* Layer 5: Track Shipment Button */
 #SR7_1_1 a.sr7-layer,
+#SR7_1_1 #SR7_1_1-1-5,
 #SR7_1_1 [data-alias="button-5"] {
   display: inline-flex !important;
   visibility: visible !important;
+  opacity: 1 !important;
   position: relative !important;
   z-index: 10 !important;
   align-items: center !important;
@@ -1386,26 +1486,59 @@ h1, h2, h3, h4, h5, h6,
   text-decoration: none !important;
   cursor: pointer !important;
   pointer-events: auto !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  -webkit-animation: sr7FadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both !important;
   animation: sr7FadeInUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both !important;
 }
 
 #SR7_1_1 a.sr7-layer:hover,
+#SR7_1_1 #SR7_1_1-1-5:hover,
 #SR7_1_1 [data-alias="button-5"]:hover {
   background: #0369a1 !important;
   transform: translateY(-3px) !important;
+  -webkit-transform: translateY(-3px) !important;
   box-shadow: 0px 16px 32px rgba(2, 132, 199, 0.65) !important;
   color: #ffffff !important;
 }
 
-/* Authentic Slide-Up & Fade Animations */
-@keyframes sr7MaskSlideUp {
+/* Animations with WebKit Prefixes */
+@-webkit-keyframes sr7MaskSlideUp {
   0% {
     opacity: 0;
+    -webkit-transform: translateY(60px);
     transform: translateY(60px);
   }
   100% {
     opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes sr7MaskSlideUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(60px);
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes sr7FadeInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(25px);
+    transform: translateY(25px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
     transform: translateY(0);
   }
 }
@@ -1413,11 +1546,22 @@ h1, h2, h3, h4, h5, h6,
 @keyframes sr7FadeInUp {
   0% {
     opacity: 0;
+    -webkit-transform: translateY(25px);
     transform: translateY(25px);
   }
   100% {
     opacity: 1;
+    -webkit-transform: translateY(0);
     transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes sr7FadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -1430,10 +1574,31 @@ h1, h2, h3, h4, h5, h6,
   }
 }
 
+/* Reduced Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  #SR7_1_1 #SR7_1_1-1-2,
+  #SR7_1_1 #SR7_1_1-1-3,
+  #SR7_1_1 #SR7_1_1-1-4,
+  #SR7_1_1 a.sr7-layer,
+  #SR7_1_1 #SR7_1_1-1-5,
+  #SR7_1_1 [data-alias="button-5"] {
+    animation: none !important;
+    -webkit-animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+  }
+}
+
 /* Responsive Breakpoints matching Slider Revolution breakpoints */
 @media (max-width: 1366px) {
+  .elementor-element.elementor-element-a9eb4b8,
+  .elementor-element.elementor-element-019c7b7,
+  .elementor-element.elementor-element-cdf2026,
+  .wp-block-themepunch-revslider,
   #SR7_1_1,
   #SR7_1_1 sr7-adjuster {
+    height: 760px !important;
     min-height: 760px !important;
   }
   #SR7_1_1 #SR7_1_1-1-2 {
@@ -1443,8 +1608,13 @@ h1, h2, h3, h4, h5, h6,
 }
 
 @media (max-width: 1024px) {
+  .elementor-element.elementor-element-a9eb4b8,
+  .elementor-element.elementor-element-019c7b7,
+  .elementor-element.elementor-element-cdf2026,
+  .wp-block-themepunch-revslider,
   #SR7_1_1,
   #SR7_1_1 sr7-adjuster {
+    height: 640px !important;
     min-height: 640px !important;
   }
   #SR7_1_1 #SR7_1_1-1-2 {
@@ -1459,32 +1629,68 @@ h1, h2, h3, h4, h5, h6,
 }
 
 @media (max-width: 767px) {
+  .elementor-element.elementor-element-a9eb4b8,
+  .elementor-element.elementor-element-019c7b7,
+  .elementor-element.elementor-element-cdf2026,
+  .wp-block-themepunch-revslider,
   #SR7_1_1,
   #SR7_1_1 sr7-adjuster {
-    min-height: 540px !important;
+    height: 560px !important;
+    min-height: 560px !important;
   }
+  #SR7_1_1 sr7-slide,
   #SR7_1_1 sr7-slide#SR7_1_1-1 {
     padding-left: 20px !important;
     padding-right: 20px !important;
+    justify-content: center !important;
   }
   #SR7_1_1 #SR7_1_1-1-2 {
     font-size: 34px !important;
     line-height: 1.2 !important;
     letter-spacing: -0.5px !important;
     margin-bottom: 14px !important;
+    word-break: break-word !important;
   }
   #SR7_1_1 #SR7_1_1-1-3 {
     font-size: 15px !important;
-    line-height: 24px !important;
+    line-height: 22px !important;
     margin-bottom: 18px !important;
   }
   #SR7_1_1 #SR7_1_1-1-4 {
     margin-bottom: 24px !important;
   }
   #SR7_1_1 a.sr7-layer,
+  #SR7_1_1 #SR7_1_1-1-5,
   #SR7_1_1 [data-alias="button-5"] {
     font-size: 15px !important;
     padding: 15px 36px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .elementor-element.elementor-element-a9eb4b8,
+  .elementor-element.elementor-element-019c7b7,
+  .elementor-element.elementor-element-cdf2026,
+  .wp-block-themepunch-revslider,
+  #SR7_1_1,
+  #SR7_1_1 sr7-adjuster {
+    height: 520px !important;
+    min-height: 520px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-2 {
+    font-size: 28px !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.3px !important;
+  }
+  #SR7_1_1 #SR7_1_1-1-3 {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+  #SR7_1_1 a.sr7-layer,
+  #SR7_1_1 #SR7_1_1-1-5,
+  #SR7_1_1 [data-alias="button-5"] {
+    font-size: 14px !important;
+    padding: 13px 28px !important;
   }
 }
 
