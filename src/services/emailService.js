@@ -173,7 +173,7 @@ function buildCleanEmailHTML({ title, subtitle, bodyContent, companyInfo, action
                 <strong>Nexivan Logistics Inc.</strong> &bull; ${companyInfo.address || '1204 Sunset Ave, Los Angeles, CA'}
               </p>
               <p style="margin: 4px 0 0;">
-                Support: <a href="tel:${(companyInfo.phone || '').replace(/[^+\d]/g, '')}" style="color: #0284c7; text-decoration: none;">${companyInfo.phone}</a> &bull; 
+                Support: <a href="sms:${(companyInfo.phone || '').replace(/[^+\d]/g, '')}" style="color: #0284c7; text-decoration: none;">${companyInfo.phone}</a> &bull; 
                 <a href="mailto:${companyInfo.email}" style="color: #0284c7; text-decoration: none;">${companyInfo.email}</a> &bull; 
                 <a href="${appUrl}" style="color: #0284c7; text-decoration: none;">nexivanlogistics.com</a>
               </p>
@@ -295,7 +295,7 @@ async function sendContactAutoReply({ firstName, email }) {
       <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: #475569; display: block; margin-bottom: 6px;">Need Immediate Assistance?</span>
       <p style="margin: 0; font-size: 13px; line-height: 1.6; color: #0f172a;">
         Our 24/7 Operations Desk is available directly:<br>
-        <strong>Phone:</strong> <a href="tel:${(companyInfo.phone || '').replace(/[^+\d]/g, '')}" style="color: #0284c7; text-decoration: none;">${companyInfo.phone}</a><br>
+        <strong>Phone:</strong> <a href="sms:${(companyInfo.phone || '').replace(/[^+\d]/g, '')}" style="color: #0284c7; text-decoration: none;">${companyInfo.phone}</a><br>
         <strong>Email:</strong> <a href="mailto:${companyInfo.email}" style="color: #0284c7; text-decoration: none;">${companyInfo.email}</a>
       </p>
     </div>

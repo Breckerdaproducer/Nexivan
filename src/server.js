@@ -138,8 +138,8 @@ async function renderHtmlWithDynamicSettings(html) {
   out = out.replace(/3392247522/g, whatsappRaw);
   out = out.replace(/4386681202/g, whatsappRaw);
 
-  // 3. Tel and mailto and WhatsApp hrefs
-  out = out.replace(/href="tel:[^"]*"/gi, `href="tel:${cleanPhone}"`);
+  // 3. SMS, mailto and WhatsApp hrefs
+  out = out.replace(/href="(?:tel|sms):[^"]*"/gi, `href="sms:${cleanPhone}"`);
   out = out.replace(/href="mailto:[^"]*"/gi, `href="mailto:${email}"`);
   out = out.replace(/href="https:\/\/wa\.me\/[^"]*"/gi, `href="https://wa.me/${whatsappRaw}"`);
   out = out.replace(/web\.whatsapp\.com\/send\?phone=[0-9]+/gi, `web.whatsapp.com/send?phone=${whatsappRaw}`);

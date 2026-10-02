@@ -1961,11 +1961,11 @@
       });
     }
 
-    // 2. Update All tel: Links and their display text
+    // 2. Update All sms: and tel: Links and their display text
     if (phone) {
       const cleanPhoneDigits = phone.replace(/[^+\d]/g, '');
-      document.querySelectorAll('a[href^="tel:"]').forEach((link) => {
-        link.setAttribute('href', `tel:${cleanPhoneDigits}`);
+      document.querySelectorAll('a[href^="tel:"], a[href^="sms:"]').forEach((link) => {
+        link.setAttribute('href', `sms:${cleanPhoneDigits}`);
         const text = (link.innerText || link.textContent || '').trim();
         // If text contains digits or matches previous numbers
         if (/\d{3}/.test(text) || /\+1/.test(text) || /\(/.test(text)) {
@@ -1977,7 +1977,7 @@
 
       // Data attributes & class-based targets
       document.querySelectorAll('[data-company-phone], .company-phone, .nex-company-phone').forEach((el) => {
-        if (el.tagName === 'A') el.setAttribute('href', `tel:${cleanPhoneDigits}`);
+        if (el.tagName === 'A') el.setAttribute('href', `sms:${cleanPhoneDigits}`);
         el.textContent = phone;
       });
     }
@@ -2003,13 +2003,13 @@
         }
       }
 
-      // B. Call Center Card on Contacts Page
-      if (titleText.includes('call') && phone) {
+      // B. Call Center / SMS Support Card on Contacts Page
+      if ((titleText.includes('call') || titleText.includes('sms') || titleText.includes('phone')) && phone) {
         const link = wrap.querySelector('a');
         const span = wrap.querySelector('.pxl-link--text, span') || link;
         const cleanPhoneDigits = phone.replace(/[^+\d]/g, '');
         if (link) {
-          link.setAttribute('href', `tel:${cleanPhoneDigits}`);
+          link.setAttribute('href', `sms:${cleanPhoneDigits}`);
         }
         if (span) {
           span.textContent = phone;
